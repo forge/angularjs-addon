@@ -53,9 +53,7 @@ public class Deployments {
 
 	public static final Package BASE_PACKAGE = AngularScaffoldProvider.class
 			.getPackage();
-	public static final String BASE_PACKAGE_PATH = File.separator
-			+ BASE_PACKAGE.getName().replace('.', File.separatorChar)
-			+ File.separator;
+	public static final String BASE_PACKAGE_PATH = "/" + BASE_PACKAGE.getName().replace('.', '/') + File.separator;
 	public static final String NEW_ENTITY_CONTROLLER_JS = "scripts/controllers/newEntityController.js.ftl";
 	public static final String EDIT_ENTITY_CONTROLLER_JS = "scripts/controllers/editEntityController.js.ftl";
 	public static final String SEARCH_ENTITY_CONTROLLER_JS = "scripts/controllers/searchEntityController.js.ftl";

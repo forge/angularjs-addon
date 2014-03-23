@@ -91,20 +91,20 @@ public class ResourceProvider {
      */
     public static List<ScaffoldResource> getGlobalTemplates(String targetDir) {
         List<ScaffoldResource> resources = new ArrayList<ScaffoldResource>();
-        resources.add(new ScaffoldResource("index.html.ftl", targetDir+ INDEX_HTML));
-        resources.add(new ScaffoldResource("app.html.ftl", targetDir + "/app.html"));
-        resources.add(new ScaffoldResource("scripts/app.js.ftl", targetDir + "/scripts/app.js"));
-        resources.add(new ScaffoldResource("scripts/directives/datepicker.js.ftl", targetDir
+        resources.add(new ScaffoldResource("/index.html.ftl", targetDir+ INDEX_HTML));
+        resources.add(new ScaffoldResource("/app.html.ftl", targetDir + "/app.html"));
+        resources.add(new ScaffoldResource("/scripts/app.js.ftl", targetDir + "/scripts/app.js"));
+        resources.add(new ScaffoldResource("/scripts/directives/datepicker.js.ftl", targetDir
                 + "/scripts/directives/datepicker.js"));
-        resources.add(new ScaffoldResource("scripts/directives/timepicker.js.ftl", targetDir
+        resources.add(new ScaffoldResource("/scripts/directives/timepicker.js.ftl", targetDir
                 + "/scripts/directives/timepicker.js"));
-        resources.add(new ScaffoldResource("scripts/directives/datetimepicker.js.ftl", targetDir
+        resources.add(new ScaffoldResource("/scripts/directives/datetimepicker.js.ftl", targetDir
                 + "/scripts/directives/datetimepicker.js"));
-        resources.add(new ScaffoldResource("scripts/services/locationParser.js.ftl", targetDir
+        resources.add(new ScaffoldResource("/scripts/services/locationParser.js.ftl", targetDir
                 + "/scripts/services/locationParser.js"));
-        resources.add(new ScaffoldResource("scripts/filters/genericSearchFilter.js.ftl", targetDir
+        resources.add(new ScaffoldResource("/scripts/filters/genericSearchFilter.js.ftl", targetDir
                 + "/scripts/filters/genericSearchFilter.js"));
-        resources.add(new ScaffoldResource("scripts/filters/startFromFilter.js.ftl", targetDir
+        resources.add(new ScaffoldResource("/scripts/filters/startFromFilter.js.ftl", targetDir
                 + "/scripts/filters/startFromFilter.js"));
         return resources;
     }
@@ -121,17 +121,17 @@ public class ResourceProvider {
      */
     public static List<ScaffoldResource> getEntityTemplates(String targetDir, String entityName) {
         List<ScaffoldResource> resources = new ArrayList<ScaffoldResource>();
-        resources.add(new ScaffoldResource("views/detail.html.ftl", targetDir + "/views/" + entityName
+        resources.add(new ScaffoldResource("/views/detail.html.ftl", targetDir + "/views/" + entityName
                 + "/detail.html"));
-        resources.add(new ScaffoldResource("views/search.html.ftl", targetDir + "/views/" + entityName
+        resources.add(new ScaffoldResource("/views/search.html.ftl", targetDir + "/views/" + entityName
                 + "/search.html"));
-        resources.add(new ScaffoldResource("scripts/services/entityFactory.js.ftl", targetDir + "/scripts/services/"
+        resources.add(new ScaffoldResource("/scripts/services/entityFactory.js.ftl", targetDir + "/scripts/services/"
                 + entityName + "Factory.js"));
-        resources.add(new ScaffoldResource("scripts/controllers/newEntityController.js.ftl", targetDir
+        resources.add(new ScaffoldResource("/scripts/controllers/newEntityController.js.ftl", targetDir
                 + "/scripts/controllers/new" + entityName + "Controller.js"));
-        resources.add(new ScaffoldResource("scripts/controllers/searchEntityController.js.ftl", targetDir
+        resources.add(new ScaffoldResource("/scripts/controllers/searchEntityController.js.ftl", targetDir
                 + "/scripts/controllers/search" + entityName + "Controller.js"));
-        resources.add(new ScaffoldResource("scripts/controllers/editEntityController.js.ftl", targetDir
+        resources.add(new ScaffoldResource("/scripts/controllers/editEntityController.js.ftl", targetDir
                 + "/scripts/controllers/edit" + entityName + "Controller.js"));
         return resources;
     }

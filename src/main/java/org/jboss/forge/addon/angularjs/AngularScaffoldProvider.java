@@ -70,7 +70,9 @@ import static org.jboss.forge.addon.angularjs.ResourceProvider.*;
 public class AngularScaffoldProvider implements ScaffoldProvider
 {
 
-   public static final String SCAFFOLD_DIR = "/scaffold";
+   private static final String BASE_PACKAGE = AngularScaffoldProvider.class.getPackage().getName();
+
+   public static final String SCAFFOLD_DIR = "/" + BASE_PACKAGE.replace('.', '/');
 
    Project project;
 
