@@ -25,5 +25,5 @@
             <button id="cancel" name="cancel" class="btn btn-default" ng-click="cancel()"><span class="glyphicon glyphicon-remove-sign"></span> Cancel</button>
             <button id="delete${entityName}" name="delete${entityName}" class="btn btn-danger" ng-show="${model}.${entityId}" ng-click="remove()"><span class="glyphicon glyphicon-trash"></span> Delete</button>
         </div>
-    <div>
+    </div>
 </form>
