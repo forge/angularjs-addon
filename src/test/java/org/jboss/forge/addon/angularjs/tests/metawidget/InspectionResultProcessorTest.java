@@ -8,19 +8,17 @@ package org.jboss.forge.addon.angularjs.tests.metawidget;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.forge.addon.angularjs.AngularScaffoldProvider;
 import org.jboss.forge.addon.angularjs.ProjectHelper;
+import org.jboss.forge.addon.angularjs.tests.freemarker.Deployments;
 import org.jboss.forge.addon.parser.java.resources.JavaResource;
 import org.jboss.forge.addon.projects.Project;
 import org.jboss.forge.arquillian.AddonDependency;
 import org.jboss.forge.arquillian.Dependencies;
 import org.jboss.forge.arquillian.archive.ForgeArchive;
-import org.jboss.forge.furnace.repositories.AddonDependencyEntry;
 import org.jboss.forge.parser.java.JavaClass;
 import org.jboss.forge.addon.parser.java.facets.JavaSourceFacet;
 import org.jboss.forge.addon.angularjs.InspectionResultProcessor;
 import org.jboss.forge.addon.scaffold.metawidget.MetawidgetInspectorFacade;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,21 +40,12 @@ import static org.junit.Assert.assertThat;
 @RunWith(Arquillian.class)
 public class InspectionResultProcessorTest {
 
-    @Inject
     private MetawidgetInspectorFacade metawidgetInspectorFacade;
-    
-    @Inject
-    private InspectionResultProcessor angularResultEnhancer;
-
-    @Inject
-    private ProjectHelper projectHelper;
-
-    private Project project;
-
-    private JavaClass entityClass;
 
     @Deployment
     @Dependencies({
+            @AddonDependency(name = "org.jboss.forge.addon:projects"),
+            @AddonDependency(name = "org.jboss.forge.addon:maven"),
             @AddonDependency(name = "org.jboss.forge.addon:scaffold-spi"),
             @AddonDependency(name = "org.jboss.forge.addon:javaee"),
             @AddonDependency(name = "org.jboss.forge.addon:templates"),
@@ -66,24 +55,25 @@ public class InspectionResultProcessorTest {
     })
     public static ForgeArchive getDeployment()
     {
-        return ShrinkWrap.create(ForgeArchive.class)
-                .addPackage(AngularScaffoldProvider.class.getPackage())
-                .addBeansXML()
-                .addAsAddonDependencies(
-                        AddonDependencyEntry.create("org.jboss.forge.furnace.container:cdi"),
-                        AddonDependencyEntry.create("org.jboss.forge.addon:scaffold-spi"),
-                        AddonDependencyEntry.create("org.jboss.forge.addon:javaee"),
-                        AddonDependencyEntry.create("org.jboss.forge.addon:templates"),
-                        AddonDependencyEntry.create("org.jboss.forge.addon:text"),
-                        AddonDependencyEntry.create("org.jboss.forge.addon:convert"),
-                        AddonDependencyEntry.create("org.jboss.forge.addon:parser-java")
-                );
+        return Deployments.getDeployment();
     }
+
+    private InspectionResultProcessor angularResultEnhancer;
+
+    @Inject
+    private ProjectHelper projectHelper;
+
+    private Project project;
+
+    private JavaClass entityClass;
 
     @Before
     public void setup()
     {
         project = projectHelper.createWebProject();
+        projectHelper.installJPA_2_0(project);
+        metawidgetInspectorFacade = new MetawidgetInspectorFacade(project);
+        angularResultEnhancer = new InspectionResultProcessor(project, metawidgetInspectorFacade);
     }
 
     @Test
@@ -501,8 +491,7 @@ public class InspectionResultProcessorTest {
 
     private JavaClass getJavaClassFor(String entityName) throws FileNotFoundException {
         JavaSourceFacet java = project.getFacet(JavaSourceFacet.class);
-        JavaClass klass = (JavaClass) java.getJavaResource(java.getBasePackage() + ".model." + entityName).getJavaSource();
-        return klass;
+        return (JavaClass) java.getJavaResource(java.getBasePackage() + ".model." + entityName).getJavaSource();
     }
     
     private String getJavaClassNameFor(String entityName) throws FileNotFoundException {
@@ -513,18 +502,22 @@ public class InspectionResultProcessorTest {
     private void generateSimpleEntity(String entityName) throws Exception {
         JavaResource jpaEntity = projectHelper.createJPAEntity(project, entityName);
         entityClass = (JavaClass)jpaEntity.getJavaSource();
+        saveJavaSource();
     }
 
     private void generateStringField(String fieldName) throws Exception {
         projectHelper.createStringField(entityClass, fieldName);
+        saveJavaSource();
     }
     
     private void generateBooleanField(String fieldName) throws Exception {
         projectHelper.createBooleanField(entityClass, fieldName);
+        saveJavaSource();
     }
 
     private void generateTemporalField(String fieldName, TemporalType type) throws Exception {
         projectHelper.createTemporalField(entityClass, fieldName, type);
+        saveJavaSource();
     }
 
     private void generateNumericField(String fieldName, String type) throws Exception {
@@ -539,58 +532,65 @@ public class InspectionResultProcessorTest {
             default:
                 throw new RuntimeException("Incorrect field type provided as input");
         }
+        saveJavaSource();
     }
 
     private void generateNumericField(String fieldName, Class<? extends Number> klass) throws Exception {
         projectHelper.createNumericField(entityClass, fieldName, klass);
+        saveJavaSource();
     }
     
     private void generateOneToOneField(String fieldName, String type, String inverseFieldName, FetchType fetchType, boolean required, Iterable<CascadeType> cascadeTypes) throws Exception {
         JavaSourceFacet java = project.getFacet(JavaSourceFacet.class);
         JavaResource entityClassResource = java.getJavaResource(entityClass);
         projectHelper.createOneToOneField(project, entityClassResource, fieldName, type, inverseFieldName, fetchType, required, cascadeTypes);
+        entityClass = getJavaClassFor(entityClass.getName());
     }
 
     private void generateManyToOneField(String fieldName, String type, String inverseFieldName, FetchType fetchType, boolean required, Iterable<CascadeType> cascadeTypes) throws Exception {
         JavaSourceFacet java = project.getFacet(JavaSourceFacet.class);
         JavaResource entityClassResource = java.getJavaResource(entityClass);
         projectHelper.createManyToOneField(project, entityClassResource, fieldName, type, inverseFieldName, fetchType, required, cascadeTypes);
+        entityClass = getJavaClassFor(entityClass.getName());
     }
 
     private void generateOneToManyField(String fieldName, String type, String inverseFieldName, FetchType fetchType, Iterable<CascadeType> cascadeTypes) throws Exception {
         JavaSourceFacet java = project.getFacet(JavaSourceFacet.class);
         JavaResource entityClassResource = java.getJavaResource(entityClass);
         projectHelper.createOneToManyField(project, entityClassResource, fieldName, type, inverseFieldName, fetchType, cascadeTypes);
+        entityClass = getJavaClassFor(entityClass.getName());
     }
 
     private void generateManyToManyField(String fieldName, String type, String inverseFieldName, FetchType fetchType, Iterable<CascadeType> cascadeTypes) throws Exception {
         JavaSourceFacet java = project.getFacet(JavaSourceFacet.class);
         JavaResource entityClassResource = java.getJavaResource(entityClass);
         projectHelper.createManyToManyField(project, entityClassResource, fieldName, type, inverseFieldName, fetchType, cascadeTypes);
+        entityClass = getJavaClassFor(entityClass.getName());
     }
 
     private void generateNotNullConstraint(String fieldName) throws Exception {
-//        getShell().execute("constraint NotNull --onProperty " + fieldName);
+        projectHelper.addNotNullConstraint(project, entityClass, fieldName, false, null);
+        entityClass = getJavaClassFor(entityClass.getName());
     }
 
     private void generateSizeConstraint(String fieldName, String minSize, String maxSize) throws Exception {
-        String command = "constraint Size --onProperty " + fieldName;
-        if (minSize != null && !minSize.equals("")) {
-            command += " --min " + minSize;
-        }
-        if (maxSize != null && !maxSize.equals("")) {
-            command += " --max " + maxSize;
-        }
-//        getShell().execute(command);
+        projectHelper.addSizeConstraint(project, entityClass, fieldName, false, null, minSize, maxSize);
+        entityClass = getJavaClassFor(entityClass.getName());
     }
 
     private void generateMinConstraint(String fieldName, String minValue) throws Exception {
-        String command = "constraint Min --onProperty " + fieldName + " --min " + minValue;
-//        getShell().execute(command);
+        projectHelper.addMinConstraint(project, entityClass, fieldName, false, null, minValue);
+        entityClass = getJavaClassFor(entityClass.getName());
     }
 
     private void generateMaxConstraint(String fieldName, String maxValue) throws Exception {
-        String command = "constraint Max --onProperty " + fieldName + " --max " + maxValue;
-//        getShell().execute(command);
+        projectHelper.addMaxConstraint(project, entityClass, fieldName, false, null, maxValue);
+        entityClass = getJavaClassFor(entityClass.getName());
     }
+
+    private void saveJavaSource() throws FileNotFoundException {
+        JavaSourceFacet java = project.getFacet(JavaSourceFacet.class);
+        java.saveJavaSource(entityClass);
+    }
+
 }

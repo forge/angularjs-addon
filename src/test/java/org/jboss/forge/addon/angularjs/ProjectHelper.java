@@ -17,17 +17,23 @@ import org.jboss.forge.addon.javaee.jpa.JPAFacet_2_0;
 import org.jboss.forge.addon.javaee.jpa.PersistenceOperations;
 import org.jboss.forge.addon.javaee.servlet.ServletFacet_3_1;
 import org.jboss.forge.addon.javaee.validation.ValidationFacet;
+import org.jboss.forge.addon.parser.java.beans.JavaClassIntrospector;
+import org.jboss.forge.addon.parser.java.beans.Property;
+import org.jboss.forge.addon.parser.java.facets.JavaSourceFacet;
 import org.jboss.forge.addon.parser.java.projects.JavaProjectType;
 import org.jboss.forge.addon.parser.java.projects.JavaWebProjectType;
 import org.jboss.forge.addon.parser.java.resources.JavaResource;
 import org.jboss.forge.addon.projects.Project;
 import org.jboss.forge.addon.projects.ProjectFactory;
 import org.jboss.forge.addon.projects.facets.MetadataFacet;
-import org.jboss.forge.parser.java.Field;
-import org.jboss.forge.parser.java.JavaClass;
+import org.jboss.forge.parser.java.*;
 
 import javax.inject.Inject;
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
@@ -136,13 +142,11 @@ public class ProjectHelper
    }
 
     public Field<JavaClass> createStringField(JavaClass entityClass, String fieldName) throws FileNotFoundException {
-       Field<JavaClass> field = fieldOperations.addFieldTo(entityClass, String.class.getSimpleName(), fieldName);
-       return field;
+        return fieldOperations.addFieldTo(entityClass, String.class.getSimpleName(), fieldName);
     }
 
     public Field<JavaClass> createBooleanField(JavaClass entityClass, String fieldName) throws FileNotFoundException {
-        Field<JavaClass> field = fieldOperations.addFieldTo(entityClass, boolean.class.getSimpleName(), fieldName);
-        return field;
+        return fieldOperations.addFieldTo(entityClass, boolean.class.getSimpleName(), fieldName);
     }
 
 
@@ -153,18 +157,15 @@ public class ProjectHelper
     }
 
     public Field<JavaClass> createIntField(JavaClass entityClass, String fieldName) throws FileNotFoundException {
-        Field<JavaClass> field = fieldOperations.addFieldTo(entityClass, int.class.getName(), fieldName);
-        return field;
+        return fieldOperations.addFieldTo(entityClass, int.class.getName(), fieldName);
     }
 
     public Field<JavaClass> createLongField(JavaClass entityClass, String fieldName) throws FileNotFoundException {
-        Field<JavaClass> field = fieldOperations.addFieldTo(entityClass, int.class.getName(), fieldName);
-        return field;
+        return fieldOperations.addFieldTo(entityClass, int.class.getName(), fieldName);
     }
 
     public Field<JavaClass> createNumericField(JavaClass entityClass, String fieldName, Class<? extends Number> type) throws FileNotFoundException {
-        Field<JavaClass> field = fieldOperations.addFieldTo(entityClass, type.getCanonicalName(), fieldName);
-        return field;
+        return fieldOperations.addFieldTo(entityClass, type.getCanonicalName(), fieldName);
     }
 
    public void createOneToOneField(Project project, JavaResource javaResource, String fieldName,
@@ -193,6 +194,103 @@ public class ProjectHelper
                                      Iterable<CascadeType> cascadeTypes) throws FileNotFoundException
     {
         fieldOperations.newManyToManyRelationship(project, javaResource, fieldName, type, inverseFieldName, fetchType, cascadeTypes);
+    }
+
+    public void addNotNullConstraint(Project project, JavaClass klass, String propertyName, boolean onAccessor, String message)
+            throws FileNotFoundException
+    {
+        Property property = getProperty(klass, propertyName);
+        final Annotation<JavaClass> constraintAnnotation = addConstraintOnProperty(property, onAccessor, NotNull.class,
+                message);
+
+        JavaSourceFacet javaSourceFacet = project.getFacet(JavaSourceFacet.class);
+        javaSourceFacet.saveJavaSource(constraintAnnotation.getOrigin());
+    }
+
+    public void addMinConstraint(Project project, JavaClass klass, String propertyName, boolean onAccessor, String message, String min)
+            throws FileNotFoundException
+    {
+        Property property = getProperty(klass, propertyName);
+        final Annotation<JavaClass> constraintAnnotation = addConstraintOnProperty(property, onAccessor, Min.class,
+                message);
+        constraintAnnotation.setLiteralValue(min);
+
+        JavaSourceFacet javaSourceFacet = project.getFacet(JavaSourceFacet.class);
+        javaSourceFacet.saveJavaSource(constraintAnnotation.getOrigin());
+    }
+
+    public void addMaxConstraint(Project project, JavaClass klass, String propertyName, boolean onAccessor, String message, String max)
+            throws FileNotFoundException
+    {
+        Property property = getProperty(klass, propertyName);
+        final Annotation<JavaClass> constraintAnnotation = addConstraintOnProperty(property, onAccessor, Max.class,
+                message);
+        constraintAnnotation.setLiteralValue(max);
+
+        JavaSourceFacet javaSourceFacet = project.getFacet(JavaSourceFacet.class);
+        javaSourceFacet.saveJavaSource(constraintAnnotation.getOrigin());
+    }
+
+    public void addSizeConstraint(Project project, JavaClass klass, String propertyName, boolean onAccessor, String message,
+                                    String min, String max) throws FileNotFoundException
+    {
+        Property property = getProperty(klass, propertyName);
+        final Annotation<JavaClass> constraintAnnotation = addConstraintOnProperty(property, onAccessor, Size.class,
+                message);
+
+        if (min != null)
+        {
+            constraintAnnotation.setLiteralValue("min", min);
+        }
+
+        if (max != null)
+        {
+            constraintAnnotation.setLiteralValue("max", max);
+        }
+
+        JavaSourceFacet javaSourceFacet = project.getFacet(JavaSourceFacet.class);
+        javaSourceFacet.saveJavaSource(constraintAnnotation.getOrigin());
+    }
+
+    private Property getProperty(JavaClass klass, String propertyName) {
+        JavaClassIntrospector introspector = new JavaClassIntrospector(klass);
+        Property property = null;
+        for (Property oneProperty : introspector.getProperties()) {
+            if(oneProperty.getName().equals(propertyName))
+            {
+                property = oneProperty;
+            }
+        }
+        return property;
+    }
+
+    private Annotation<JavaClass> addConstraintOnProperty(Property property, boolean onAccessor,
+                                                          Class<? extends java.lang.annotation.Annotation> annotationClass, String message)
+            throws FileNotFoundException
+    {
+        Member<JavaClass, ?> member = property.getActualField();
+        if (onAccessor)
+        {
+            final Method<JavaClass> accessor = property.getAccessor();
+            if (accessor == null)
+            {
+                throw new IllegalStateException("The property named '" + property.getName() + "' has no accessor");
+            }
+            member = accessor;
+        }
+
+        if (member.hasAnnotation(annotationClass))
+        {
+            throw new IllegalStateException("The element '" + member.getName() + "' is already annotated with @"
+                    + annotationClass.getSimpleName());
+        }
+
+        Annotation<JavaClass> annotation = member.addAnnotation(annotationClass);
+        if (message != null)
+        {
+            annotation.setStringValue("message", message);
+        }
+        return annotation;
     }
 
 }
