@@ -7,6 +7,7 @@
     <artifactId>angularjs-addon</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <properties>
+        <version.forge.descriptors>0.0.4.Final</version.forge.descriptors>
         <version.furnace>2.2.1-SNAPSHOT</version.furnace>
         <version.metawidget>2.4</version.metawidget>
         <version.shrinkwrap.resolvers>2.1.0</version.shrinkwrap.resolvers>
@@ -29,10 +30,18 @@
             <classifier>forge-addon</classifier>
             <scope>provided</scope>
         </dependency>
+        <!-- Needs to be included in the POM to prevent InteliJ IDEA from throwing an error in making the project -->
+        <dependency>
+            <groupId>org.jboss.forge.descriptors</groupId>
+            <artifactId>javaee-descriptors</artifactId>
+            <version>${version.forge.descriptors}</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.jboss.forge.addon</groupId>
             <artifactId>javaee-impl</artifactId>
             <version>${version.furnace}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.forge.addon</groupId>
@@ -65,16 +74,16 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.jboss.forge.addon</groupId>
-            <artifactId>javaee-impl</artifactId>
-            <version>${version.furnace}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.jboss.forge.furnace.container</groupId>
             <artifactId>cdi</artifactId>
             <classifier>forge-addon</classifier>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.forge.addon</groupId>
+            <artifactId>maven</artifactId>
+            <classifier>forge-addon</classifier>
+            <scope>test</scope>
         </dependency>
 		<dependency>
 			<groupId>org.jboss.shrinkwrap.resolver</groupId>
