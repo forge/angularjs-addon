@@ -12,7 +12,7 @@ import org.jboss.forge.addon.javaee.cdi.CDIFacet_1_0;
 import org.jboss.forge.addon.javaee.cdi.CDIFacet_1_1;
 import org.jboss.forge.addon.javaee.ejb.EJBFacet_3_2;
 import org.jboss.forge.addon.javaee.faces.FacesFacet_2_2;
-import org.jboss.forge.addon.javaee.jpa.FieldOperations;
+import org.jboss.forge.addon.javaee.jpa.JPAFieldOperations;
 import org.jboss.forge.addon.javaee.jpa.JPAFacet_2_0;
 import org.jboss.forge.addon.javaee.jpa.PersistenceOperations;
 import org.jboss.forge.addon.javaee.servlet.ServletFacet_3_1;
@@ -61,7 +61,7 @@ public class ProjectHelper
    private PersistenceOperations persistenceOperations;
 
    @Inject
-   private FieldOperations fieldOperations;
+   private JPAFieldOperations fieldOperations;
 
    /**
     * Creates a project installing the required facets from {@link org.jboss.forge.addon.parser.java.projects.JavaWebProjectType#getRequiredFacets()}
