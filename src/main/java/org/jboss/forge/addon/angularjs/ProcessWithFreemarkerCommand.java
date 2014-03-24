@@ -39,9 +39,6 @@ public class ProcessWithFreemarkerCommand {
     private ResourceFactory resourceFactory;
 
     @Inject
-    private TemplateGenerator templateGenerator;
-
-    @Inject
     private TemplateProcessorFactory templateProcessorFactory;
 
     @Inject
