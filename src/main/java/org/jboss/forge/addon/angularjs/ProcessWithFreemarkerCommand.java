@@ -9,7 +9,6 @@ package org.jboss.forge.addon.angularjs;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -19,7 +18,6 @@ import org.jboss.forge.addon.projects.facets.WebResourcesFacet;
 import org.jboss.forge.addon.resource.Resource;
 import org.jboss.forge.addon.resource.ResourceFactory;
 import org.jboss.forge.addon.templates.Template;
-import org.jboss.forge.addon.templates.TemplateGenerator;
 import org.jboss.forge.addon.templates.TemplateProcessor;
 import org.jboss.forge.addon.templates.TemplateProcessorFactory;
 import org.jboss.forge.addon.scaffold.util.ScaffoldUtil;
@@ -62,13 +60,13 @@ public class ProcessWithFreemarkerCommand {
         List<Resource<?>> resources = new ArrayList<>();
         Project project = event.getProject();
 
-        for (ScaffoldResource projectGlobalTemplate : event.getResources()) {
+        for (ScaffoldResource scaffoldResource : event.getResources()) {
             WebResourcesFacet web = project.getFacet(WebResourcesFacet.class);
 
-            Resource<?> resource = resourceFactory.create(getClass().getResource(SCAFFOLD_DIR + projectGlobalTemplate.getSource()));
+            Resource<?> resource = resourceFactory.create(getClass().getResource(SCAFFOLD_DIR + scaffoldResource.getSource()));
             if (project.hasFacet(TemplateFacet.class)) {
                 TemplateFacet templates = project.getFacet(TemplateFacet.class);
-                Resource<?> templateResource = templates.getResource(projectGlobalTemplate.getSource());
+                Resource<?> templateResource = templates.getResource(scaffoldResource.getSource());
                 if(templateResource.exists())
                 {
                     resource = templateResource;
@@ -83,7 +81,7 @@ public class ProcessWithFreemarkerCommand {
             } catch (IOException ioEx) {
                 throw new IllegalStateException(ioEx);
             }
-            resources.add(ScaffoldUtil.createOrOverwrite(web.getWebResource(projectGlobalTemplate.getDestination()),
+            resources.add(ScaffoldUtil.createOrOverwrite(web.getWebResource(scaffoldResource.getDestination()),
                     output, event.isOverwrite()));
         }
         resourceRegistry.addAll(resources);

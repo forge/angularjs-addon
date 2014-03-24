@@ -16,7 +16,6 @@ import org.jboss.forge.addon.projects.Project;
 import org.jboss.forge.addon.projects.facets.WebResourcesFacet;
 import org.jboss.forge.addon.resource.Resource;
 import org.jboss.forge.addon.scaffold.util.ScaffoldUtil;
-import org.jboss.forge.furnace.util.Assert;
 
 /**
  * An observer for the {@link CopyWebResourcesEvent} event. This observer copies scaffolding resources specified in the event to
@@ -38,14 +37,10 @@ public class CopyWebResourcesCommand {
         resourceRegistry.clear();
         List<Resource<?>> resources = new ArrayList<>();
         Project project = event.getProject();
-        for (ScaffoldResource template : event.getResources()) {
+        for (ScaffoldResource scaffoldResource : event.getResources()) {
             WebResourcesFacet web = project.getFacet(WebResourcesFacet.class);
-            Assert.notNull(web, "WebResourcesFacet was not found.");
-            Assert.notNull(getClass().getResourceAsStream(template.getSource()), "Source " + template.getSource() + " was not found.");
-            Assert.notNull(template.getDestination(), "Destination " + template.getDestination() + " was not found.");
-            Assert.notNull(web.getWebResource(template.getDestination()), "Could not obtain resource.");
-            resources.add(ScaffoldUtil.createOrOverwrite(web.getWebResource(template.getDestination()), getClass()
-                    .getResourceAsStream(template.getSource()), event.isOverwrite()));
+            resources.add(ScaffoldUtil.createOrOverwrite(web.getWebResource(scaffoldResource.getDestination()), getClass()
+                    .getResourceAsStream(scaffoldResource.getSource()), event.isOverwrite()));
         }
         resourceRegistry.addAll(resources);
         return;
