@@ -42,6 +42,7 @@ import org.jboss.forge.addon.scaffold.metawidget.MetawidgetInspectorFacade;
 import org.jboss.forge.addon.scaffold.spi.ScaffoldGenerationContext;
 import org.jboss.forge.addon.scaffold.spi.ScaffoldSetupContext;
 import org.jboss.forge.addon.scaffold.ui.ScaffoldSetupWizard;
+import org.jboss.forge.addon.templates.TemplateProcessorFactory;
 import org.jboss.forge.addon.templates.facets.TemplateFacet;
 import org.jboss.forge.addon.ui.command.UICommand;
 import org.jboss.forge.addon.ui.result.NavigationResult;
@@ -53,12 +54,9 @@ import org.jboss.forge.addon.ui.result.navigation.NavigationResultBuilder;
 import org.jboss.forge.addon.ui.util.Metadata;
 import org.jboss.forge.parser.java.JavaClass;
 import org.jboss.forge.parser.java.JavaSource;
-import org.jboss.forge.parser.java.util.Strings;
 import org.jboss.shrinkwrap.descriptor.api.webapp30.WebAppDescriptor;
-import org.jboss.shrinkwrap.descriptor.api.webcommon30.WelcomeFileListType;
 import org.metawidget.util.simple.StringUtils;
 
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import static org.jboss.forge.addon.angularjs.ResourceProvider.*;
@@ -83,13 +81,7 @@ public class AngularScaffoldProvider implements ScaffoldProvider
    private ResourceFactory resourceFactory;
 
    @Inject
-   private Event<CopyWebResourcesEvent> copyResourcesEvent;
-
-   @Inject
-   private Event<ProcessWithFreemarkerEvent> processWithFreemarkerEvent;
-
-   @Inject
-   private ResourceRegistry resourceRegistry;
+   private TemplateProcessorFactory templateProcessorFactory;
 
    @Override
    public String getName()
@@ -113,8 +105,9 @@ public class AngularScaffoldProvider implements ScaffoldProvider
 
       // Setup static resources.
       ArrayList<Resource<?>> result = new ArrayList<>();
-      copyResourcesEvent.fire(new CopyWebResourcesEvent(project, getStatics(targetDir), overwrite));
-      result.addAll(resourceRegistry.getCreatedResources());
+      CopyResourcesCommand copyResourcesCommand = new CopyResourcesCommand(project);
+      List<Resource<?>> resources = copyResourcesCommand.execute(getStatics(targetDir), overwrite);
+      result.addAll(resources);
       return result;
    }
 
@@ -208,22 +201,22 @@ public class AngularScaffoldProvider implements ScaffoldProvider
          // We need this to use contextual naming schemes instead of performing toLowerCase etc. in FTLs.
 
          // Prepare the Freemarker data model
-         Map<String, Object> root = new HashMap<String, Object>();
-         root.put("entityName", entity.getName());
-         root.put("entityId", entityId);
-         root.put("properties", inspectionResults);
-         root.put("projectId", StringUtils.camelCase(metadata.getProjectName()));
-         root.put("projectTitle", StringUtils.uncamelCase(metadata.getProjectName()));
-         root.put("resourceRootPath", resourceRootPath);
-         root.put("resourcePath", entityResourcePath);
-         root.put("parentDirectories", getParentDirectories(targetDir));
+         Map<String, Object> dataModel = new HashMap<String, Object>();
+         dataModel.put("entityName", entity.getName());
+         dataModel.put("entityId", entityId);
+         dataModel.put("properties", inspectionResults);
+         dataModel.put("projectId", StringUtils.camelCase(metadata.getProjectName()));
+         dataModel.put("projectTitle", StringUtils.uncamelCase(metadata.getProjectName()));
+         dataModel.put("resourceRootPath", resourceRootPath);
+         dataModel.put("resourcePath", entityResourcePath);
+         dataModel.put("parentDirectories", getParentDirectories(targetDir));
 
          // Process the Freemarker templates with the Freemarker data model and retrieve the generated resources from
          // the registry.
-         processWithFreemarkerEvent.fire(new ProcessWithFreemarkerEvent(project,
-                  getEntityTemplates(targetDir, entity.getName()),
-                  root, overwrite));
-         result.addAll(resourceRegistry.getCreatedResources());
+         List<ScaffoldResource> scaffoldResources = getEntityTemplates(targetDir, entity.getName());
+         ProcessTemplateCommand processTemplateCommand = new ProcessTemplateCommand(project, resourceFactory, templateProcessorFactory);
+         List<Resource<?>> createdResources = processTemplateCommand.execute(scaffoldResources, dataModel, overwrite);
+         result.addAll(createdResources);
       }
 
       List<Resource<?>> indexResources = generateIndex(targetDir, overwrite);
@@ -328,14 +321,15 @@ public class AngularScaffoldProvider implements ScaffoldProvider
 
       MetadataFacet metadata = project.getFacet(MetadataFacet.class);
 
-      Map<String, Object> root = new HashMap<>();
-      root.put("entityNames", entityNames);
-      root.put("projectId", StringUtils.camelCase(metadata.getProjectName()));
-      root.put("projectTitle", StringUtils.uncamelCase(metadata.getProjectName()));
-      root.put("targetDir", targetDir);
+      Map<String, Object> dataModel = new HashMap<>();
+      dataModel.put("entityNames", entityNames);
+      dataModel.put("projectId", StringUtils.camelCase(metadata.getProjectName()));
+      dataModel.put("projectTitle", StringUtils.uncamelCase(metadata.getProjectName()));
+      dataModel.put("targetDir", targetDir);
 
-      processWithFreemarkerEvent.fire(new ProcessWithFreemarkerEvent(project, getGlobalTemplates(targetDir), root, overwrite));
-      result.addAll(resourceRegistry.getCreatedResources());
+      ProcessTemplateCommand processTemplateCommand = new ProcessTemplateCommand(project, resourceFactory, templateProcessorFactory);
+      List<Resource<?>> createdResources = processTemplateCommand.execute(getGlobalTemplates(targetDir), dataModel, overwrite);
+      result.addAll(createdResources);
       configureWelcomeFile();
       return result;
    }
