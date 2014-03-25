@@ -11,7 +11,7 @@ angular.module('${angularApp}',['ngRoute','ngResource'])
                 newEntityController = "New${entityName}Controller"
                 editEntityController = "Edit${entityName}Controller"
                 entityIdJsVar = "${entityName}Id"
-                entityRoute = "/${entityName}s"
+                entityRoute = "/${pluralizedEntityNames[entityName_index]}"
                 entityPartialsLocation = "views/${entityName}">
       .when('${entityRoute}',{templateUrl:'${entityPartialsLocation}/search.html',controller:'${searchEntityController}'})
       .when('${entityRoute}/new',{templateUrl:'${entityPartialsLocation}/detail.html',controller:'${newEntityController}'})

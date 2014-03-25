@@ -2,13 +2,13 @@
     <h3>Create a new ${entityName}</h3>
     <div class="form-group">
         <div class="col-md-offset-2 col-sm-2">
-            <a id="Create" name="Create" class="btn btn-primary" href="#/${entityName}s/new"><span class="glyphicon glyphicon-plus-sign"></span> Create</a>
+            <a id="Create" name="Create" class="btn btn-primary" href="#/${pluralizedEntityName}/new"><span class="glyphicon glyphicon-plus-sign"></span> Create</a>
         </div>
     </div>
 </div>
 <hr/>
 <div>
-    <h3>Search for ${entityName}s</h3>
+    <h3>Search for ${pluralizedEntityName}</h3>
     <form id="${entityName}Search" class="form-horizontal">
         ${searchFormProperties}
         <div class="form-group">

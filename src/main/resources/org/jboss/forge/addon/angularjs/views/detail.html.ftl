@@ -1,6 +1,6 @@
 <#assign formName = "${entityName}Form"
         model = "${entityName?uncap_first}">
-<header ng-switch on="$location.path().indexOf('/${entityName}s/new') > -1">
+<header ng-switch on="$location.path().indexOf('/${pluralizedEntityName}/new') > -1">
     <h3 ng-switch-when="true">Create a new ${entityName}</h3>
     <h3 ng-switch-when="false">View or edit ${entityName}</h3>
 </header>

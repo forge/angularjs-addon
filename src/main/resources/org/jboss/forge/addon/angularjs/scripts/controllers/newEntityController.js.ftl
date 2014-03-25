@@ -3,7 +3,7 @@
     angularController = "New${entityName}Controller"
     angularResource = "${entityName}Resource"
     model = "$scope.${entityName?uncap_first}"
-    entityRoute = "/${entityName}s"
+    entityRoute = "/${pluralizedEntityName}"
 >
 <#--An assignment expression that 'captures' all the related resources -->
 <#assign relatedResources>

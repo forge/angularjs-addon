@@ -44,6 +44,7 @@ import org.jboss.forge.addon.scaffold.spi.ScaffoldSetupContext;
 import org.jboss.forge.addon.scaffold.ui.ScaffoldSetupWizard;
 import org.jboss.forge.addon.templates.TemplateProcessorFactory;
 import org.jboss.forge.addon.templates.facets.TemplateFacet;
+import org.jboss.forge.addon.text.Inflector;
 import org.jboss.forge.addon.ui.command.UICommand;
 import org.jboss.forge.addon.ui.result.NavigationResult;
 import org.jboss.forge.addon.projects.Project;
@@ -82,6 +83,9 @@ public class AngularScaffoldProvider implements ScaffoldProvider
 
    @Inject
    private TemplateProcessorFactory templateProcessorFactory;
+
+   @Inject
+   private Inflector inflector;
 
    @Override
    public String getName()
@@ -177,9 +181,10 @@ public class AngularScaffoldProvider implements ScaffoldProvider
          JavaClass entity = (JavaClass) javaSource;
          String resourceRootPath = getRootResourcePath(project);
          String entityResourcePath = parseResourcePath(entity);
+         String entityName = entity.getName();
          if (entityResourcePath == null || entityResourcePath.isEmpty())
          {
-            entityResourcePath = entity.getName().toLowerCase() + "s";
+            entityResourcePath = inflector.pluralize(entityName.toLowerCase());
          }
          /*
           * TODO Generate REST resources and then obtain the REST URIs.
@@ -205,7 +210,8 @@ public class AngularScaffoldProvider implements ScaffoldProvider
 
          // Prepare the Freemarker data model
          Map<String, Object> dataModel = new HashMap<String, Object>();
-         dataModel.put("entityName", entity.getName());
+         dataModel.put("entityName", entityName);
+         dataModel.put("pluralizedEntityName", inflector.pluralize(entityName));
          dataModel.put("entityId", entityId);
          dataModel.put("properties", inspectionResults);
          dataModel.put("projectId", StringUtils.camelCase(metadata.getProjectName()));
@@ -218,10 +224,10 @@ public class AngularScaffoldProvider implements ScaffoldProvider
          // the registry.
          WebResourcesFacet web = project.getFacet(WebResourcesFacet.class);
          ProcessingStrategy strategy = new ProcessTemplateStrategy(web, resourceFactory, project, templateProcessorFactory, dataModel, overwrite);
-         List<ScaffoldResource> scaffoldResources = getEntityTemplates(targetDir, entity.getName(), strategy);
-         scaffoldResources.add(new ScaffoldResource("/views/detail.html.ftl", targetDir + "/views/" + entity.getName()
+         List<ScaffoldResource> scaffoldResources = getEntityTemplates(targetDir, entityName, strategy);
+         scaffoldResources.add(new ScaffoldResource("/views/detail.html.ftl", targetDir + "/views/" + entityName
                   + "/detail.html", new DetailTemplateStrategy(web, resourceFactory, project, templateProcessorFactory, dataModel, overwrite)));
-         scaffoldResources.add(new ScaffoldResource("/views/search.html.ftl", targetDir + "/views/" + entity.getName()
+         scaffoldResources.add(new ScaffoldResource("/views/search.html.ftl", targetDir + "/views/" + entityName
                   + "/search.html", new SearchTemplateStrategy(web, resourceFactory, project, templateProcessorFactory, dataModel, overwrite)));
          for (ScaffoldResource scaffoldResource : scaffoldResources) {
             result.add(scaffoldResource.generate());
@@ -323,15 +329,19 @@ public class AngularScaffoldProvider implements ScaffoldProvider
       WebResourcesFacet web = this.project.getFacet(WebResourcesFacet.class);
       List<Resource<?>> resources = web.getWebResource(targetDir + "/views/").listResources(filter);
       List<String> entityNames = new ArrayList<>();
+      List<String> pluralizedEntityNames = new ArrayList<>();
       for (Resource<?> resource : resources)
       {
-         entityNames.add(resource.getName());
+         String resourceName = resource.getName();
+         entityNames.add(resourceName);
+         pluralizedEntityNames.add(inflector.pluralize(resourceName));
       }
 
       MetadataFacet metadata = project.getFacet(MetadataFacet.class);
 
       Map<String, Object> dataModel = new HashMap<>();
       dataModel.put("entityNames", entityNames);
+      dataModel.put("pluralizedEntityNames", pluralizedEntityNames);
       dataModel.put("projectId", StringUtils.camelCase(metadata.getProjectName()));
       dataModel.put("projectTitle", StringUtils.uncamelCase(metadata.getProjectName()));
       dataModel.put("targetDir", targetDir);

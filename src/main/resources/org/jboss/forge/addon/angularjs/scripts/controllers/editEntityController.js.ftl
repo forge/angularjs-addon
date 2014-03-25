@@ -4,7 +4,7 @@
     angularResource = "${entityName}Resource"
     entityIdJsVar = "${entityName}Id"
     model = "$scope.${entityName?uncap_first}"
-    entityRoute = "/${entityName}s"
+    entityRoute = "/${pluralizedEntityName}"
 >
 
 <#assign relatedResources>

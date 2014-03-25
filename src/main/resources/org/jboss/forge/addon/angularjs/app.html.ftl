@@ -34,8 +34,8 @@
                     </a>
                     <nav class="sidebar-nav" ng-controller="NavController" role="navigation">
                         <div id="sidebar-entries" class="list-group">
-                            <#list entityNames as entityName>
-                        	<a class="list-group-item" ng-class="{active: matchesRoute('${entityName}s')}" href="#/${entityName}s" data-toggle="offcanvas">${entityName}s</a>
+                            <#list pluralizedEntityNames as pluralizedEntityName>
+                        	<a class="list-group-item" ng-class="{active: matchesRoute('${pluralizedEntityName}')}" href="#/${pluralizedEntityName}" data-toggle="offcanvas">${pluralizedEntityName}</a>
                         	</#list>
                         </div>
                     </nav>

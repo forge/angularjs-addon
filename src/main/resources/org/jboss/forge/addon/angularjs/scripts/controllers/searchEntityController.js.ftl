@@ -3,7 +3,7 @@
     angularController = "Search${entityName}Controller" 
     angularResource = "${entityName}Resource" 
     model = "$scope.${entityName?uncap_first}" 
-    entityRoute = "/${entityName}s" 
+    entityRoute = "/${pluralizedEntityName}"
 >
 
 <#assign relatedResources>
