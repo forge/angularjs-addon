@@ -121,10 +121,6 @@ public class ResourceProvider {
      */
     public static List<ScaffoldResource> getEntityTemplates(String targetDir, String entityName, ProcessingStrategy strategy) {
         List<ScaffoldResource> resources = new ArrayList<>();
-        resources.add(new ScaffoldResource("/views/detail.html.ftl", targetDir + "/views/" + entityName
-                + "/detail.html", strategy));
-        resources.add(new ScaffoldResource("/views/search.html.ftl", targetDir + "/views/" + entityName
-                + "/search.html", strategy));
         resources.add(new ScaffoldResource("/scripts/services/entityFactory.js.ftl", targetDir + "/scripts/services/"
                 + entityName + "Factory.js", strategy));
         resources.add(new ScaffoldResource("/scripts/controllers/newEntityController.js.ftl", targetDir

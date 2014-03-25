@@ -218,7 +218,12 @@ public class AngularScaffoldProvider implements ScaffoldProvider
          // the registry.
          WebResourcesFacet web = project.getFacet(WebResourcesFacet.class);
          ProcessingStrategy strategy = new ProcessTemplateStrategy(web, resourceFactory, project, templateProcessorFactory, dataModel, overwrite);
-         for (ScaffoldResource scaffoldResource : getEntityTemplates(targetDir, entity.getName(), strategy)) {
+         List<ScaffoldResource> scaffoldResources = getEntityTemplates(targetDir, entity.getName(), strategy);
+         scaffoldResources.add(new ScaffoldResource("/views/detail.html.ftl", targetDir + "/views/" + entity.getName()
+                  + "/detail.html", new DetailTemplateStrategy(web, resourceFactory, project, templateProcessorFactory, dataModel, overwrite)));
+         scaffoldResources.add(new ScaffoldResource("/views/search.html.ftl", targetDir + "/views/" + entity.getName()
+                  + "/search.html", new SearchTemplateStrategy(web, resourceFactory, project, templateProcessorFactory, dataModel, overwrite)));
+         for (ScaffoldResource scaffoldResource : scaffoldResources) {
             result.add(scaffoldResource.generate());
          }
       }

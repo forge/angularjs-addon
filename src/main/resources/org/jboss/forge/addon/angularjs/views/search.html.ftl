@@ -10,9 +10,7 @@
 <div>
     <h3>Search for ${entityName}s</h3>
     <form id="${entityName}Search" class="form-horizontal">
-        <#list properties as property>
-        <#include "includes/searchFormInput.html.ftl">
-        </#list>
+        ${searchFormProperties}
         <div class="form-group">
             <div class="col-md-offset-2 col-sm-10">
                 <a id="Search" name="Search" class="btn btn-primary" ng-click="performSearch()"><span class="glyphicon glyphicon-search"></span> Search</a>
@@ -21,6 +19,6 @@
     </form>
 </div>
 <div id="search-results">
-    <#include "includes/searchResults.html.ftl">
-    <#include "includes/searchResultsPaginator.html.ftl">
+    ${searchResults}
+    ${searchResultsPaginator}
 </div>
