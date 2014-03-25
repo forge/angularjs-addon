@@ -24,7 +24,6 @@ import org.jboss.forge.addon.javaee.ejb.ui.EJBSetupWizard;
 import org.jboss.forge.addon.javaee.jpa.JPAFacet;
 import org.jboss.forge.addon.javaee.jpa.ui.setup.JPASetupWizard;
 import org.jboss.forge.addon.javaee.rest.RestFacet;
-import org.jboss.forge.addon.javaee.rest.ui.RestEndpointFromEntityCommand;
 import org.jboss.forge.addon.javaee.rest.ui.setup.RestSetupWizard;
 import org.jboss.forge.addon.javaee.servlet.ServletFacet;
 import org.jboss.forge.addon.javaee.servlet.ServletFacet_3_0;
@@ -278,7 +277,7 @@ public class AngularScaffoldProvider implements ScaffoldProvider
    {
       NavigationResultBuilder builder = NavigationResultBuilder.create();
       builder.add(ScaffoldableEntitySelectionWizard.class);
-      builder.add(RestEndpointFromEntityCommand.class);
+      builder.add(JSONRestResourceFromEntityCommand.class);
       return builder.build();
    }
 
