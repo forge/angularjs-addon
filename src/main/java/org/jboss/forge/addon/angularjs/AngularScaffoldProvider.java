@@ -105,9 +105,12 @@ public class AngularScaffoldProvider implements ScaffoldProvider
 
       // Setup static resources.
       ArrayList<Resource<?>> result = new ArrayList<>();
-      CopyResourcesCommand copyResourcesCommand = new CopyResourcesCommand(project);
-      List<Resource<?>> resources = copyResourcesCommand.execute(getStatics(targetDir), overwrite);
-      result.addAll(resources);
+      WebResourcesFacet web = project.getFacet(WebResourcesFacet.class);
+      ProcessingStrategy strategy = new CopyResourcesStrategy(web, overwrite);
+      for (ScaffoldResource scaffoldResource : getStatics(targetDir, strategy)) {
+         result.add(scaffoldResource.generate());
+      }
+
       return result;
    }
 
@@ -213,10 +216,11 @@ public class AngularScaffoldProvider implements ScaffoldProvider
 
          // Process the Freemarker templates with the Freemarker data model and retrieve the generated resources from
          // the registry.
-         List<ScaffoldResource> scaffoldResources = getEntityTemplates(targetDir, entity.getName());
-         ProcessTemplateCommand processTemplateCommand = new ProcessTemplateCommand(project, resourceFactory, templateProcessorFactory);
-         List<Resource<?>> createdResources = processTemplateCommand.execute(scaffoldResources, dataModel, overwrite);
-         result.addAll(createdResources);
+         WebResourcesFacet web = project.getFacet(WebResourcesFacet.class);
+         ProcessingStrategy strategy = new ProcessTemplateStrategy(web, resourceFactory, project, templateProcessorFactory, dataModel, overwrite);
+         for (ScaffoldResource scaffoldResource : getEntityTemplates(targetDir, entity.getName(), strategy)) {
+            result.add(scaffoldResource.generate());
+         }
       }
 
       List<Resource<?>> indexResources = generateIndex(targetDir, overwrite);
@@ -327,9 +331,11 @@ public class AngularScaffoldProvider implements ScaffoldProvider
       dataModel.put("projectTitle", StringUtils.uncamelCase(metadata.getProjectName()));
       dataModel.put("targetDir", targetDir);
 
-      ProcessTemplateCommand processTemplateCommand = new ProcessTemplateCommand(project, resourceFactory, templateProcessorFactory);
-      List<Resource<?>> createdResources = processTemplateCommand.execute(getGlobalTemplates(targetDir), dataModel, overwrite);
-      result.addAll(createdResources);
+      ProcessingStrategy strategy = new ProcessTemplateStrategy(web, resourceFactory, project, templateProcessorFactory, dataModel, overwrite);
+      for (ScaffoldResource scaffoldResource : getGlobalTemplates(targetDir, strategy)) {
+          result.add(scaffoldResource.generate());
+      }
+
       configureWelcomeFile();
       return result;
    }

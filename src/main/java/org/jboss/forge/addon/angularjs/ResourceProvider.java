@@ -59,24 +59,24 @@ public class ResourceProvider {
      *        be copied to.
      * @return A list of {@link ScaffoldResource}s representing static files that are to be copied upon scaffolding setup.
      */
-    public static List<ScaffoldResource> getStatics(String targetDir) {
-        List<ScaffoldResource> statics = new ArrayList<ScaffoldResource>();
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + BOOTSTRAP_CSS, targetDir + BOOTSTRAP_CSS));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + MAIN_CSS, targetDir + MAIN_CSS));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + BOOTSTRAP_THEME_CSS, targetDir + BOOTSTRAP_THEME_CSS));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + OFFCANVAS_JS, targetDir + OFFCANVAS_JS));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + JQUERY_JS, targetDir + JQUERY_JS));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + BOOTSTRAP_JS, targetDir + BOOTSTRAP_JS));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + ANGULAR_JS, targetDir + ANGULAR_JS));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + ANGULAR_ROUTE_JS, targetDir + ANGULAR_ROUTE_JS));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + ANGULAR_RESOURCE_JS, targetDir + ANGULAR_RESOURCE_JS));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + MODERNIZR_JS, targetDir + MODERNIZR_JS));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + FORGE_LOGO_PNG, targetDir + FORGE_LOGO_PNG));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + GLYPHICONS_EOT, targetDir + GLYPHICONS_EOT));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + GLYPHICONS_SVG, targetDir + GLYPHICONS_SVG));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + GLYPHICONS_TTF, targetDir + GLYPHICONS_TTF));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + GLYPHICONS_WOFF, targetDir + GLYPHICONS_WOFF));
-        statics.add(new ScaffoldResource(SCAFFOLD_DIR + LANDING_VIEW, targetDir + LANDING_VIEW));
+    public static List<ScaffoldResource> getStatics(String targetDir, ProcessingStrategy strategy) {
+        List<ScaffoldResource> statics = new ArrayList<>();
+        statics.add(new ScaffoldResource(SCAFFOLD_DIR + BOOTSTRAP_CSS, targetDir + BOOTSTRAP_CSS, strategy));
+        statics.add(new ScaffoldResource(SCAFFOLD_DIR + MAIN_CSS, targetDir + MAIN_CSS, strategy));
+        statics.add(new ScaffoldResource(SCAFFOLD_DIR + BOOTSTRAP_THEME_CSS, targetDir + BOOTSTRAP_THEME_CSS, strategy));
+        statics.add(new ScaffoldResource(SCAFFOLD_DIR + OFFCANVAS_JS, targetDir + OFFCANVAS_JS, strategy));
+        statics.add(new ScaffoldResource(SCAFFOLD_DIR + JQUERY_JS, targetDir + JQUERY_JS, strategy));
+        statics.add(new ScaffoldResource(SCAFFOLD_DIR + BOOTSTRAP_JS, targetDir + BOOTSTRAP_JS, strategy));
+        statics.add(new ScaffoldResource(SCAFFOLD_DIR + ANGULAR_JS, targetDir + ANGULAR_JS, strategy));
+        statics.add(new ScaffoldResource(SCAFFOLD_DIR + ANGULAR_ROUTE_JS, targetDir + ANGULAR_ROUTE_JS, strategy));
+        statics.add(new ScaffoldResource(SCAFFOLD_DIR + ANGULAR_RESOURCE_JS, targetDir + ANGULAR_RESOURCE_JS, strategy));
+        statics.add(new ScaffoldResource(SCAFFOLD_DIR + MODERNIZR_JS, targetDir + MODERNIZR_JS, strategy));
+        statics.add(new ScaffoldResource(SCAFFOLD_DIR + FORGE_LOGO_PNG, targetDir + FORGE_LOGO_PNG, strategy));
+        statics.add(new ScaffoldResource(SCAFFOLD_DIR + GLYPHICONS_EOT, targetDir + GLYPHICONS_EOT, strategy));
+        statics.add(new ScaffoldResource(SCAFFOLD_DIR + GLYPHICONS_SVG, targetDir + GLYPHICONS_SVG, strategy));
+        statics.add(new ScaffoldResource(SCAFFOLD_DIR + GLYPHICONS_TTF, targetDir + GLYPHICONS_TTF, strategy));
+        statics.add(new ScaffoldResource(SCAFFOLD_DIR + GLYPHICONS_WOFF, targetDir + GLYPHICONS_WOFF, strategy));
+        statics.add(new ScaffoldResource(SCAFFOLD_DIR + LANDING_VIEW, targetDir + LANDING_VIEW, strategy));
         return statics;
     }
     
@@ -89,23 +89,23 @@ public class ResourceProvider {
      * @return A list of {@link ScaffoldResource}s representing Freemarker templates that are to be processed only once for a
      *         scaffold generation run.
      */
-    public static List<ScaffoldResource> getGlobalTemplates(String targetDir) {
-        List<ScaffoldResource> resources = new ArrayList<ScaffoldResource>();
-        resources.add(new ScaffoldResource("/index.html.ftl", targetDir+ INDEX_HTML));
-        resources.add(new ScaffoldResource("/app.html.ftl", targetDir + "/app.html"));
-        resources.add(new ScaffoldResource("/scripts/app.js.ftl", targetDir + "/scripts/app.js"));
+    public static List<ScaffoldResource> getGlobalTemplates(String targetDir, ProcessingStrategy strategy) {
+        List<ScaffoldResource> resources = new ArrayList<>();
+        resources.add(new ScaffoldResource("/index.html.ftl", targetDir+ INDEX_HTML, strategy));
+        resources.add(new ScaffoldResource("/app.html.ftl", targetDir + "/app.html", strategy));
+        resources.add(new ScaffoldResource("/scripts/app.js.ftl", targetDir + "/scripts/app.js", strategy));
         resources.add(new ScaffoldResource("/scripts/directives/datepicker.js.ftl", targetDir
-                + "/scripts/directives/datepicker.js"));
+                + "/scripts/directives/datepicker.js", strategy));
         resources.add(new ScaffoldResource("/scripts/directives/timepicker.js.ftl", targetDir
-                + "/scripts/directives/timepicker.js"));
+                + "/scripts/directives/timepicker.js", strategy));
         resources.add(new ScaffoldResource("/scripts/directives/datetimepicker.js.ftl", targetDir
-                + "/scripts/directives/datetimepicker.js"));
+                + "/scripts/directives/datetimepicker.js", strategy));
         resources.add(new ScaffoldResource("/scripts/services/locationParser.js.ftl", targetDir
-                + "/scripts/services/locationParser.js"));
+                + "/scripts/services/locationParser.js", strategy));
         resources.add(new ScaffoldResource("/scripts/filters/genericSearchFilter.js.ftl", targetDir
-                + "/scripts/filters/genericSearchFilter.js"));
+                + "/scripts/filters/genericSearchFilter.js", strategy));
         resources.add(new ScaffoldResource("/scripts/filters/startFromFilter.js.ftl", targetDir
-                + "/scripts/filters/startFromFilter.js"));
+                + "/scripts/filters/startFromFilter.js", strategy));
         return resources;
     }
 
@@ -119,20 +119,20 @@ public class ResourceProvider {
      * @return A list of {@link ScaffoldResource}s representing Freemarker templates that are to be processed for every entity
      *         during a scaffold generation run.
      */
-    public static List<ScaffoldResource> getEntityTemplates(String targetDir, String entityName) {
-        List<ScaffoldResource> resources = new ArrayList<ScaffoldResource>();
+    public static List<ScaffoldResource> getEntityTemplates(String targetDir, String entityName, ProcessingStrategy strategy) {
+        List<ScaffoldResource> resources = new ArrayList<>();
         resources.add(new ScaffoldResource("/views/detail.html.ftl", targetDir + "/views/" + entityName
-                + "/detail.html"));
+                + "/detail.html", strategy));
         resources.add(new ScaffoldResource("/views/search.html.ftl", targetDir + "/views/" + entityName
-                + "/search.html"));
+                + "/search.html", strategy));
         resources.add(new ScaffoldResource("/scripts/services/entityFactory.js.ftl", targetDir + "/scripts/services/"
-                + entityName + "Factory.js"));
+                + entityName + "Factory.js", strategy));
         resources.add(new ScaffoldResource("/scripts/controllers/newEntityController.js.ftl", targetDir
-                + "/scripts/controllers/new" + entityName + "Controller.js"));
+                + "/scripts/controllers/new" + entityName + "Controller.js", strategy));
         resources.add(new ScaffoldResource("/scripts/controllers/searchEntityController.js.ftl", targetDir
-                + "/scripts/controllers/search" + entityName + "Controller.js"));
+                + "/scripts/controllers/search" + entityName + "Controller.js", strategy));
         resources.add(new ScaffoldResource("/scripts/controllers/editEntityController.js.ftl", targetDir
-                + "/scripts/controllers/edit" + entityName + "Controller.js"));
+                + "/scripts/controllers/edit" + entityName + "Controller.js", strategy));
         return resources;
     }
 
