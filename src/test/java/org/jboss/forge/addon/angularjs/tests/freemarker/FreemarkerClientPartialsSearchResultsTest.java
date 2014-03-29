@@ -176,6 +176,7 @@ public class FreemarkerClientPartialsSearchResultsTest {
         
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("entityName", "SampleEntity");
+        root.put("pluralizedEntityName", "SampleEntities");
         root.put("entityId", basicStringProperty);
         root.put("properties", properties);
         Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.SEARCH_RESULTS));
@@ -193,7 +194,7 @@ public class FreemarkerClientPartialsSearchResultsTest {
         
         Elements resultCells = resultRows.select(" > td");
         assertThat(resultCells.size(), equalTo(1));
-        assertThat(resultCells.select("a").attr("href"), equalTo("#/"+"SampleEntitys"+ "/edit/{{result.fullName}}"));
+        assertThat(resultCells.select("a").attr("href"), equalTo("#/"+"SampleEntities"+ "/edit/{{result.fullName}}"));
         assertThat(resultCells.select("a").text(), equalTo("{{result.fullName}}"));
     }
     
@@ -210,6 +211,7 @@ public class FreemarkerClientPartialsSearchResultsTest {
         
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("entityName", "SampleEntity");
+        root.put("pluralizedEntityName", "SampleEntities");
         root.put("entityId", basicNumberProperty);
         root.put("properties", properties);
         Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.SEARCH_RESULTS));
@@ -227,7 +229,7 @@ public class FreemarkerClientPartialsSearchResultsTest {
         
         Elements resultCells = resultRows.select(" > td");
         assertThat(resultCells.size(), equalTo(1));
-        assertThat(resultCells.select("a").attr("href"), equalTo("#/"+"SampleEntitys"+ "/edit/{{result.age}}"));
+        assertThat(resultCells.select("a").attr("href"), equalTo("#/"+"SampleEntities"+ "/edit/{{result.age}}"));
         assertThat(resultCells.select("a").text(), equalTo("{{result.age}}"));
     }
     
@@ -245,6 +247,7 @@ public class FreemarkerClientPartialsSearchResultsTest {
         
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("entityName", "SampleEntity");
+        root.put("pluralizedEntityName", "SampleEntities");
         root.put("entityId", basicDateProperty);
         root.put("properties", properties);
         Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.SEARCH_RESULTS));
@@ -262,7 +265,7 @@ public class FreemarkerClientPartialsSearchResultsTest {
         
         Elements resultCells = resultRows.select(" > td");
         assertThat(resultCells.size(), equalTo(1));
-        assertThat(resultCells.select("a").attr("href"), equalTo("#/"+"SampleEntitys"+ "/edit/{{result.dateOfBirth}}"));
+        assertThat(resultCells.select("a").attr("href"), equalTo("#/"+"SampleEntities"+ "/edit/{{result.dateOfBirth}}"));
         assertThat(resultCells.select("a").text(), equalTo("{{result.dateOfBirth| date:'mediumDate'}}"));
     }
     
@@ -282,6 +285,7 @@ public class FreemarkerClientPartialsSearchResultsTest {
         
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("entityName", "SampleEntity");
+        root.put("pluralizedEntityName", "SampleEntities");
         root.put("entityId", oneToOneProperty);
         root.put("properties", properties);
         Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.SEARCH_RESULTS));
@@ -299,7 +303,7 @@ public class FreemarkerClientPartialsSearchResultsTest {
         
         Elements resultCells = resultRows.select(" > td");
         assertThat(resultCells.size(), equalTo(1));
-        assertThat(resultCells.select("a").attr("href"), equalTo("#/"+"SampleEntitys"+ "/edit/{{result.voucher}}"));
+        assertThat(resultCells.select("a").attr("href"), equalTo("#/"+"SampleEntities"+ "/edit/{{result.voucher}}"));
         assertThat(resultCells.select("a").text(), equalTo("{{result.voucher.id}}"));
     }
     
@@ -319,6 +323,7 @@ public class FreemarkerClientPartialsSearchResultsTest {
         
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("entityName", "SampleEntity");
+        root.put("pluralizedEntityName", "SampleEntities");
         root.put("entityId", manyToOneProperty);
         root.put("properties", properties);
         Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.SEARCH_RESULTS));
@@ -336,7 +341,7 @@ public class FreemarkerClientPartialsSearchResultsTest {
         
         Elements resultCells = resultRows.select(" > td");
         assertThat(resultCells.size(), equalTo(1));
-        assertThat(resultCells.select("a").attr("href"), equalTo("#/"+"SampleEntitys"+ "/edit/{{result.customer}}"));
+        assertThat(resultCells.select("a").attr("href"), equalTo("#/"+"SampleEntities"+ "/edit/{{result.customer}}"));
         assertThat(resultCells.select("a").text(), equalTo("{{result.customer.id}}"));
     }
 

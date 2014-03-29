@@ -26,6 +26,8 @@ public class TestHelpers {
     
     public static final String ENTITY_NAME = "SampleEntity";
 
+    public static final String PLURALIZED_ENTITY_NAME = "SampleEntities";
+
     public static final Map<String, String> ENTITY_VERSION_PROP = createVersionProperty();
 
     public static final Map<String, String> ENTITY_ID_PROP = createIdProperty();
@@ -75,6 +77,7 @@ public class TestHelpers {
         root.put("projectId", StringUtils.camelCase(PROJECT_ID));
         root.put("projectTitle", StringUtils.uncamelCase(PROJECT_ID));
         root.put("entityNames", Arrays.asList(new String[]{ENTITY_NAME}));
+        root.put("pluralizedEntityNames", Arrays.asList(new String[]{PLURALIZED_ENTITY_NAME}));
         root.put("targetDir", "");
         return Collections.unmodifiableMap(root);
     }
@@ -84,11 +87,16 @@ public class TestHelpers {
         root.put("projectId", StringUtils.camelCase(PROJECT_ID));
         root.put("projectTitle", StringUtils.uncamelCase(PROJECT_ID));
         root.put("entityName", ENTITY_NAME);
+        root.put("pluralizedEntityName", PLURALIZED_ENTITY_NAME);
         root.put("entityId", "id");
         root.put("resourceRootPath", "rest");
         root.put("resourcePath", ENTITY_NAME + "s");
         root.put("parentDirectories", "");
         root.put("properties", entityAttributeProperties);
+        root.put("formProperties", "<div/>");
+        root.put("searchFormProperties", "<div/>");
+        root.put("searchResults", "<div/>");
+        root.put("searchResultsPaginator", "<div/>");
         return Collections.unmodifiableMap(root);
     }
 
