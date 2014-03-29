@@ -80,6 +80,6 @@ public class ProcessTemplateStrategy implements ProcessingStrategy
          throw new IllegalStateException(ioEx);
       }
       return ScaffoldUtil.createOrOverwrite(web.getWebResource(scaffoldResource.getDestination()),
-               output, overwrite);
+               output, true);
    }
 }
