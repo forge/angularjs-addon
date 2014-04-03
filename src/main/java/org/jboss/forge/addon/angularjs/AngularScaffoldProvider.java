@@ -6,15 +6,42 @@
  */
 package org.jboss.forge.addon.angularjs;
 
+import static org.jboss.forge.addon.angularjs.ResourceProvider.ANGULAR_JS;
+import static org.jboss.forge.addon.angularjs.ResourceProvider.ANGULAR_RESOURCE_JS;
+import static org.jboss.forge.addon.angularjs.ResourceProvider.ANGULAR_ROUTE_JS;
+import static org.jboss.forge.addon.angularjs.ResourceProvider.BOOTSTRAP_CSS;
+import static org.jboss.forge.addon.angularjs.ResourceProvider.BOOTSTRAP_JS;
+import static org.jboss.forge.addon.angularjs.ResourceProvider.BOOTSTRAP_THEME_CSS;
+import static org.jboss.forge.addon.angularjs.ResourceProvider.FORGE_LOGO_PNG;
+import static org.jboss.forge.addon.angularjs.ResourceProvider.GLYPHICONS_EOT;
+import static org.jboss.forge.addon.angularjs.ResourceProvider.GLYPHICONS_SVG;
+import static org.jboss.forge.addon.angularjs.ResourceProvider.GLYPHICONS_TTF;
+import static org.jboss.forge.addon.angularjs.ResourceProvider.GLYPHICONS_WOFF;
+import static org.jboss.forge.addon.angularjs.ResourceProvider.JQUERY_JS;
+import static org.jboss.forge.addon.angularjs.ResourceProvider.LANDING_VIEW;
+import static org.jboss.forge.addon.angularjs.ResourceProvider.MAIN_CSS;
+import static org.jboss.forge.addon.angularjs.ResourceProvider.MODERNIZR_JS;
+import static org.jboss.forge.addon.angularjs.ResourceProvider.OFFCANVAS_JS;
+import static org.jboss.forge.addon.angularjs.ResourceProvider.getEntityTemplates;
+import static org.jboss.forge.addon.angularjs.ResourceProvider.getGlobalTemplates;
+import static org.jboss.forge.addon.angularjs.ResourceProvider.getStatics;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.JarURLConnection;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+
+import javax.inject.Inject;
 
 import org.jboss.forge.addon.facets.FacetFactory;
 import org.jboss.forge.addon.javaee.cdi.CDIFacet;
@@ -31,14 +58,18 @@ import org.jboss.forge.addon.javaee.servlet.ServletFacet_3_1;
 import org.jboss.forge.addon.javaee.servlet.ui.ServletSetupWizard;
 import org.jboss.forge.addon.parser.java.facets.JavaSourceFacet;
 import org.jboss.forge.addon.parser.java.resources.JavaResource;
+import org.jboss.forge.addon.projects.Project;
 import org.jboss.forge.addon.projects.facets.DependencyFacet;
 import org.jboss.forge.addon.projects.facets.MetadataFacet;
 import org.jboss.forge.addon.projects.facets.WebResourcesFacet;
 import org.jboss.forge.addon.resource.FileResource;
+import org.jboss.forge.addon.resource.Resource;
 import org.jboss.forge.addon.resource.ResourceFactory;
 import org.jboss.forge.addon.resource.ResourceFilter;
 import org.jboss.forge.addon.scaffold.metawidget.MetawidgetInspectorFacade;
+import org.jboss.forge.addon.scaffold.spi.AccessStrategy;
 import org.jboss.forge.addon.scaffold.spi.ScaffoldGenerationContext;
+import org.jboss.forge.addon.scaffold.spi.ScaffoldProvider;
 import org.jboss.forge.addon.scaffold.spi.ScaffoldSetupContext;
 import org.jboss.forge.addon.scaffold.ui.ScaffoldSetupWizard;
 import org.jboss.forge.addon.templates.TemplateProcessorFactory;
@@ -46,20 +77,13 @@ import org.jboss.forge.addon.templates.facets.TemplateFacet;
 import org.jboss.forge.addon.text.Inflector;
 import org.jboss.forge.addon.ui.command.UICommand;
 import org.jboss.forge.addon.ui.result.NavigationResult;
-import org.jboss.forge.addon.projects.Project;
-import org.jboss.forge.addon.resource.Resource;
-import org.jboss.forge.addon.scaffold.spi.AccessStrategy;
-import org.jboss.forge.addon.scaffold.spi.ScaffoldProvider;
 import org.jboss.forge.addon.ui.result.navigation.NavigationResultBuilder;
 import org.jboss.forge.addon.ui.util.Metadata;
-import org.jboss.forge.parser.java.JavaClass;
-import org.jboss.forge.parser.java.JavaSource;
+import org.jboss.forge.roaster.model.JavaClass;
+import org.jboss.forge.roaster.model.source.JavaClassSource;
+import org.jboss.forge.roaster.model.source.JavaSource;
 import org.jboss.shrinkwrap.descriptor.api.webapp30.WebAppDescriptor;
 import org.metawidget.util.simple.StringUtils;
-
-import javax.inject.Inject;
-
-import static org.jboss.forge.addon.angularjs.ResourceProvider.*;
 
 /**
  * A {@link ScaffoldProvider} that generates AngularJS scaffolding from JPA entities. The generated scaffold is utilizes
@@ -165,7 +189,7 @@ public class AngularScaffoldProvider implements ScaffoldProvider
             JavaResource javaResource = (JavaResource) resource;
             try
             {
-               javaSource = javaResource.getJavaSource();
+               javaSource = javaResource.getJavaType();
             }
             catch (FileNotFoundException fileEx)
             {
@@ -177,7 +201,7 @@ public class AngularScaffoldProvider implements ScaffoldProvider
             continue;
          }
 
-         JavaClass entity = (JavaClass) javaSource;
+         JavaClassSource entity = (JavaClassSource) javaSource;
          String resourceRootPath = getRootResourcePath(project);
          String entityResourcePath = parseResourcePath(entity);
          String entityName = entity.getName();
@@ -295,7 +319,7 @@ public class AngularScaffoldProvider implements ScaffoldProvider
    /**
     * Generates the application's index aka landing page, among others. All artifacts that are generated once per
     * scaffolding run are generated here.
-    * 
+    *
     * @param targetDir The target directory for the generated scaffold artifacts.
     * @param overwrite A flag that indicates whether existing resources should be overwritten or not.
     * @return A list of generated {@link Resource}s
@@ -438,7 +462,7 @@ public class AngularScaffoldProvider implements ScaffoldProvider
    /**
     * Obtains the root path for REST resources so that the AngularJS resource factory will be generated with the correct
     * REST resource URL.
-    * 
+    *
     * @return The root path of the REST resources generated by the Forge REST plugin.
     */
    private String getRootResourcePath(Project project)
@@ -451,7 +475,7 @@ public class AngularScaffoldProvider implements ScaffoldProvider
    /**
     * Provided a target directory, this method calculates the parent directories to re-create the path to the web
     * resource root.
-    * 
+    *
     * @param targetDir The target directory that would be used as the basis for calculating the parent directories.
     * @return The parent directories to traverse. Represented as a sequence of '..' characters with '/' to denote
     *         multiple parent directories.

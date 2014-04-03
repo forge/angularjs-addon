@@ -17,10 +17,12 @@ import org.jboss.forge.addon.projects.Project;
 import org.jboss.forge.addon.projects.ProjectFactory;
 import org.jboss.forge.addon.projects.Projects;
 import org.jboss.forge.addon.resource.Resource;
-import org.jboss.forge.addon.resource.ResourceFactory;
 import org.jboss.forge.addon.scaffold.spi.ResourceCollection;
-import org.jboss.forge.addon.scaffold.spi.ScaffoldGenerationContext;
-import org.jboss.forge.addon.ui.context.*;
+import org.jboss.forge.addon.ui.context.UIBuilder;
+import org.jboss.forge.addon.ui.context.UIContext;
+import org.jboss.forge.addon.ui.context.UIExecutionContext;
+import org.jboss.forge.addon.ui.context.UINavigationContext;
+import org.jboss.forge.addon.ui.context.UIValidationContext;
 import org.jboss.forge.addon.ui.input.UISelectMany;
 import org.jboss.forge.addon.ui.metadata.UICommandMetadata;
 import org.jboss.forge.addon.ui.metadata.WithAttributes;
@@ -28,18 +30,14 @@ import org.jboss.forge.addon.ui.result.NavigationResult;
 import org.jboss.forge.addon.ui.result.Result;
 import org.jboss.forge.addon.ui.util.Metadata;
 import org.jboss.forge.addon.ui.wizard.UIWizardStep;
-import org.jboss.forge.parser.java.JavaClass;
-import org.jboss.shrinkwrap.descriptor.api.persistence.PersistenceCommonDescriptor;
+import org.jboss.forge.roaster.model.source.JavaClassSource;
 
 public class ScaffoldableEntitySelectionWizard implements UIWizardStep
 {
 
    @Inject
    @WithAttributes(label = "Targets", required = true)
-   private UISelectMany<JavaClass> targets;
-
-   @Inject
-   private ResourceFactory resourceFactory;
+   private UISelectMany<JavaClassSource> targets;
 
    @Inject
    private ProjectFactory projectFactory;
@@ -52,20 +50,21 @@ public class ScaffoldableEntitySelectionWizard implements UIWizardStep
       ResourceCollection resourceCollection = new ResourceCollection();
       if (targets.getValue() != null)
       {
-         for (JavaClass klass : targets.getValue())
+         for (JavaClassSource klass : targets.getValue())
          {
-             Project project = getSelectedProject(uiContext);
-             JavaSourceFacet javaSource = project.getFacet(JavaSourceFacet.class);
-             Resource resource = javaSource.getJavaResource(klass);
-             if (resource != null)
-             {
-                resourceCollection.addToCollection(resource);
-             }
+            Project project = getSelectedProject(uiContext);
+            JavaSourceFacet javaSource = project.getFacet(JavaSourceFacet.class);
+            Resource<?> resource = javaSource.getJavaResource(klass);
+            if (resource != null)
+            {
+               resourceCollection.addToCollection(resource);
+            }
          }
       }
 
       attributeMap.put(ResourceCollection.class, resourceCollection);
-      ScaffoldGenerationContext genCtx = (ScaffoldGenerationContext) attributeMap.get(ScaffoldGenerationContext.class);
+      // ScaffoldGenerationContext genCtx = (ScaffoldGenerationContext)
+      // attributeMap.get(ScaffoldGenerationContext.class);
       return null;
    }
 
@@ -88,12 +87,12 @@ public class ScaffoldableEntitySelectionWizard implements UIWizardStep
       UIContext uiContext = builder.getUIContext();
       Project project = getSelectedProject(uiContext);
 
-      JPAFacet<PersistenceCommonDescriptor> persistenceFacet = project.getFacet(JPAFacet.class);
+      JPAFacet<?> persistenceFacet = project.getFacet(JPAFacet.class);
       targets.setValueChoices(persistenceFacet.getAllEntities());
-      targets.setItemLabelConverter(new Converter<JavaClass, String>()
+      targets.setItemLabelConverter(new Converter<JavaClassSource, String>()
       {
          @Override
-         public String convert(JavaClass source)
+         public String convert(JavaClassSource source)
          {
             return source == null ? null : source.getQualifiedName();
          }
