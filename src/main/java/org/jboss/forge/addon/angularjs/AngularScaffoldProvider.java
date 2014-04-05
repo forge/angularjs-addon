@@ -71,7 +71,6 @@ import org.jboss.forge.addon.scaffold.spi.AccessStrategy;
 import org.jboss.forge.addon.scaffold.spi.ScaffoldGenerationContext;
 import org.jboss.forge.addon.scaffold.spi.ScaffoldProvider;
 import org.jboss.forge.addon.scaffold.spi.ScaffoldSetupContext;
-import org.jboss.forge.addon.scaffold.ui.ScaffoldSetupWizard;
 import org.jboss.forge.addon.templates.TemplateProcessorFactory;
 import org.jboss.forge.addon.templates.facets.TemplateFacet;
 import org.jboss.forge.addon.text.Inflector;
@@ -289,10 +288,13 @@ public class AngularScaffoldProvider implements ScaffoldProvider
          setupCommands.add(RestSetupWizard.class);
       }
 
-      Metadata compositeSetupMetadata = Metadata.forCommand(ScaffoldSetupWizard.class)
-               .name("Setup Facets")
-               .description("Setup all dependent facets for the AngularJS scaffold.");
-      builder.add(compositeSetupMetadata, setupCommands);
+      if(setupCommands.size() >0)
+      {
+         Metadata compositeSetupMetadata = Metadata.forCommand(setupCommands.get(0))
+                  .name("Setup Facets")
+                  .description("Setup all dependent facets for the AngularJS scaffold.");
+         builder.add(compositeSetupMetadata, setupCommands);
+      }
       return builder.build();
    }
 
