@@ -35,6 +35,7 @@ import org.jboss.forge.addon.ui.command.PrerequisiteCommandsProvider;
 import org.jboss.forge.addon.ui.context.UIBuilder;
 import org.jboss.forge.addon.ui.context.UIContext;
 import org.jboss.forge.addon.ui.context.UIExecutionContext;
+import org.jboss.forge.addon.ui.context.UINavigationContext;
 import org.jboss.forge.addon.ui.hints.InputType;
 import org.jboss.forge.addon.ui.input.UIInput;
 import org.jboss.forge.addon.ui.input.UISelectOne;
@@ -46,6 +47,7 @@ import org.jboss.forge.addon.ui.result.Results;
 import org.jboss.forge.addon.ui.result.navigation.NavigationResultBuilder;
 import org.jboss.forge.addon.ui.util.Categories;
 import org.jboss.forge.addon.ui.util.Metadata;
+import org.jboss.forge.addon.ui.wizard.UIWizardStep;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.shrinkwrap.descriptor.api.persistence.PersistenceCommonDescriptor;
 import org.jboss.shrinkwrap.descriptor.api.persistence.PersistenceUnitCommon;
@@ -53,7 +55,8 @@ import org.jboss.shrinkwrap.descriptor.api.persistence.PersistenceUnitCommon;
 /**
  * Created by vineet on 3/25/14.
  */
-public class JSONRestResourceFromEntityCommand extends AbstractJavaEECommand implements PrerequisiteCommandsProvider
+public class JSONRestResourceFromEntityCommand extends AbstractJavaEECommand implements PrerequisiteCommandsProvider,
+         UIWizardStep
 {
 
    @Inject
@@ -219,5 +222,11 @@ public class JSONRestResourceFromEntityCommand extends AbstractJavaEECommand imp
          }
       }
       return builder.build();
+   }
+
+   @Override
+   public NavigationResult next(UINavigationContext context) throws Exception
+   {
+      return null;
    }
 }
