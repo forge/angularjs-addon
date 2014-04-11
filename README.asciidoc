@@ -48,3 +48,104 @@ To use this addon, you must add it as a dependency in the *pom.xml* of your `for
 ----
 == Features
 * Scaffold web-apps from JPA entities. The generated scaffold uses a thick-client based on AngularJS, and a JAX-RS RESTful backend.
+
+== Usage
+
+=== Prerequsites
+
+JBoss Tools with Forge 2.4.1, or JBoss Forge-CLI 2.4.1.
+
+=== Install the addon:
+
+Assuming JBoss Tools with Forge, or Forge-CLI is installed:
+
+*(JBT)*
+
+Ctrl+5. Run the "Install the addon from Git" command, using these coordinates: https://github.com/forge/angularjs-addon.git
+
+*(Forge-CLI)*
+
+----
+$ addon-git-install --url https://github.com/forge/angularjs-addon.git
+----
+
+=== Create a new project
+
+*(JBT)*
+
+Ctrl+5. Run the "Project: New" command. Create a new web application, named 'hello-angular'.
+
+*(Forge-CLI)*
+
+----
+$ project-new --named hello-angular
+----
+
+=== Setup JPA
+
+*(JBT)*
+
+Ctrl+5. Run the "JPA: Setup" command. Defaults should be sufficient.
+
+*(Forge-CLI)*
+
+----
+$ jpa-setup
+----
+
+=== Create a few JPA entities with fields
+
+*(JBT)*
+
+Ctrl+5. Run the "JPA: New Entity" command. Create a new entity (with an auto-generated Id) named 'Customer'.
+
+Select the newly created Customer Java source file in the navigator. Ctrl+5. Run the "JPA: New Field" command. Create a new field of type String in the Customer entity named 'fullName'.
+
+Ctrl+5 again and re-run the same command. Create a new field of type int in the Customer entity named 'age'.
+
+
+*(Forge-CLI)*
+
+----
+$ jpa-new-entity --named Customer
+$ jpa-new-field --named fullName
+$ jpa-new-field --named age --type int
+----
+
+=== Setup Bean Validation and create new constraints
+
+*(JBT)*
+
+Ctrl+5. Run the "Constraint: Setup" command. Choose the "Generic Java EE" BV provider to use.
+
+Ctrl+5. Run the "Constraint: Add" command. Create a NotNull constraint on the fullName field.
+
+Ctrl+5. Run the "Constraint: Add" command. Create a Min constraint on the age field, with min value of 0.
+
+*(Forge-CLI)*
+
+----
+$ constraint-setup --providers Generic\ Java\ EE
+$ constraint-add --onProperty fullName --constraint NotNull
+$ constraint-add --onProperty age --constraint Min --value 0
+----
+
+
+=== Setup and generate the AngularJS scaffold
+
+*(JBT)*
+
+Ctrl+5. Run the "Scaffold: Setup" command. Choose the "AngularJS" type to use.
+
+Ctrl+5. Run the "Scaffold: Generate" command. Choose the "AngularJS" type to use. Select the Customer entity to scaffold. (I'll rework this bit across scaffold providers when fixing FORGE-1501 and FORGE-1731).
+
+On completion, a JAX-RS resource that can handle requests and responses of media type application/json should be created, in conjunction with the AngularJS views.
+
+*(Forge-CLI)*
+
+----
+$ scaffold-setup --provider AngularJS
+$ scaffold-generate --provider AngularJS --targets org.hello.angular.model.Customer
+----
+
+This app can now be deployed to JBoss EAP.
