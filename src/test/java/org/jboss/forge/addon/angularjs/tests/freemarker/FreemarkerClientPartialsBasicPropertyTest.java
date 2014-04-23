@@ -11,8 +11,8 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.forge.addon.resource.Resource;
 import org.jboss.forge.addon.resource.ResourceFactory;
-import org.jboss.forge.addon.templates.TemplateProcessor;
-import org.jboss.forge.addon.templates.TemplateProcessorFactory;
+import org.jboss.forge.addon.templates.Template;
+import org.jboss.forge.addon.templates.TemplateFactory;
 import org.jboss.forge.addon.templates.freemarker.FreemarkerTemplate;
 import org.jboss.forge.arquillian.AddonDependency;
 import org.jboss.forge.arquillian.Dependencies;
@@ -45,7 +45,7 @@ public class FreemarkerClientPartialsBasicPropertyTest {
     private ResourceFactory resourceFactory;
 
     @Inject
-    private TemplateProcessorFactory processorFactory;
+    private TemplateFactory processorFactory;
 
     @Deployment
     @Dependencies({
@@ -66,7 +66,7 @@ public class FreemarkerClientPartialsBasicPropertyTest {
         Map<String, Object> root = createInspectionResultWrapper(ENTITY_NAME, ENTITY_VERSION_PROP);
 
         Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.BASIC_PROPERTY_DETAIL_INCLUDE));
-        TemplateProcessor processor = processorFactory.fromTemplate(new FreemarkerTemplate(templateResource));
+        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
         String output = processor.process(root);
         assertThat(output.trim(), IsEqual.equalTo(""));
     }
@@ -76,7 +76,7 @@ public class FreemarkerClientPartialsBasicPropertyTest {
         Map<String, Object> root = createInspectionResultWrapper(ENTITY_NAME, ENTITY_ID_PROP);
 
         Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.BASIC_PROPERTY_DETAIL_INCLUDE));
-        TemplateProcessor processor = processorFactory.fromTemplate(new FreemarkerTemplate(templateResource));
+        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
         String output = processor.process(root);
         assertThat(output.trim(), IsEqual.equalTo(""));
     }
@@ -86,7 +86,7 @@ public class FreemarkerClientPartialsBasicPropertyTest {
         Map<String, Object> root = createInspectionResultWrapper(ENTITY_NAME, BASIC_STRING_PROP);
 
         Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.BASIC_PROPERTY_DETAIL_INCLUDE));
-        TemplateProcessor processor = processorFactory.fromTemplate(new FreemarkerTemplate(templateResource));
+        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
         String output = processor.process(root);
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
@@ -106,7 +106,7 @@ public class FreemarkerClientPartialsBasicPropertyTest {
         Map<String, Object> root = createInspectionResultWrapper(ENTITY_NAME, STRING_PROP_WITH_MAX_LEN);
 
         Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.BASIC_PROPERTY_DETAIL_INCLUDE));
-        TemplateProcessor processor = processorFactory.fromTemplate(new FreemarkerTemplate(templateResource));
+        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
         String output = processor.process(root);
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
@@ -127,7 +127,7 @@ public class FreemarkerClientPartialsBasicPropertyTest {
         Map<String, Object> root = createInspectionResultWrapper(ENTITY_NAME, STRING_PROP_WITH_MIN_LEN);
 
         Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.BASIC_PROPERTY_DETAIL_INCLUDE));
-        TemplateProcessor processor = processorFactory.fromTemplate(new FreemarkerTemplate(templateResource));
+        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
         String output = processor.process(root);
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
@@ -148,7 +148,7 @@ public class FreemarkerClientPartialsBasicPropertyTest {
         Map<String, Object> root = createInspectionResultWrapper(ENTITY_NAME, NUMBER_PROP);
 
         Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.BASIC_PROPERTY_DETAIL_INCLUDE));
-        TemplateProcessor processor = processorFactory.fromTemplate(new FreemarkerTemplate(templateResource));
+        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
         String output = processor.process(root);
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
@@ -168,7 +168,7 @@ public class FreemarkerClientPartialsBasicPropertyTest {
         Map<String, Object> root = createInspectionResultWrapper(ENTITY_NAME, NUMBER_PROP_WITH_MIN_VAL);
 
         Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.BASIC_PROPERTY_DETAIL_INCLUDE));
-        TemplateProcessor processor = processorFactory.fromTemplate(new FreemarkerTemplate(templateResource));
+        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
         String output = processor.process(root);
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
@@ -189,7 +189,7 @@ public class FreemarkerClientPartialsBasicPropertyTest {
         Map<String, Object> root = createInspectionResultWrapper(ENTITY_NAME, NUMBER_PROP_WITH_MAX_VAL);
 
         Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.BASIC_PROPERTY_DETAIL_INCLUDE));
-        TemplateProcessor processor = processorFactory.fromTemplate(new FreemarkerTemplate(templateResource));
+        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
         String output = processor.process(root);
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
@@ -210,7 +210,7 @@ public class FreemarkerClientPartialsBasicPropertyTest {
         Map<String, Object> root = createInspectionResultWrapper(ENTITY_NAME, DATE_PROP);
 
         Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.BASIC_PROPERTY_DETAIL_INCLUDE));
-        TemplateProcessor processor = processorFactory.fromTemplate(new FreemarkerTemplate(templateResource));
+        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
         String output = processor.process(root);
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
@@ -229,7 +229,7 @@ public class FreemarkerClientPartialsBasicPropertyTest {
         Map<String, Object> root = createInspectionResultWrapper(ENTITY_NAME, TIME_PROP);
 
         Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.BASIC_PROPERTY_DETAIL_INCLUDE));
-        TemplateProcessor processor = processorFactory.fromTemplate(new FreemarkerTemplate(templateResource));
+        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
         String output = processor.process(root);
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
@@ -247,7 +247,7 @@ public class FreemarkerClientPartialsBasicPropertyTest {
     public void testGenerateBasicDatetimeProperty() throws Exception {
         Map<String, Object> root = createInspectionResultWrapper(ENTITY_NAME, DATETIME_PROP);
         Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.BASIC_PROPERTY_DETAIL_INCLUDE));
-        TemplateProcessor processor = processorFactory.fromTemplate(new FreemarkerTemplate(templateResource));
+        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
         String output = processor.process(root);
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
@@ -266,7 +266,7 @@ public class FreemarkerClientPartialsBasicPropertyTest {
         Map<String, Object> root = createInspectionResultWrapper(ENTITY_NAME, BOOLEAN_PROP);
 
         Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.BASIC_PROPERTY_DETAIL_INCLUDE));
-        TemplateProcessor processor = processorFactory.fromTemplate(new FreemarkerTemplate(templateResource));
+        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
         String output = processor.process(root);
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));

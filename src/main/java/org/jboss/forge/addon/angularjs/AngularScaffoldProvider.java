@@ -71,7 +71,7 @@ import org.jboss.forge.addon.scaffold.spi.AccessStrategy;
 import org.jboss.forge.addon.scaffold.spi.ScaffoldGenerationContext;
 import org.jboss.forge.addon.scaffold.spi.ScaffoldProvider;
 import org.jboss.forge.addon.scaffold.spi.ScaffoldSetupContext;
-import org.jboss.forge.addon.templates.TemplateProcessorFactory;
+import org.jboss.forge.addon.templates.TemplateFactory;
 import org.jboss.forge.addon.templates.facets.TemplateFacet;
 import org.jboss.forge.addon.text.Inflector;
 import org.jboss.forge.addon.ui.command.UICommand;
@@ -104,7 +104,7 @@ public class AngularScaffoldProvider implements ScaffoldProvider
    private ResourceFactory resourceFactory;
 
    @Inject
-   private TemplateProcessorFactory templateProcessorFactory;
+   private TemplateFactory templateFactory;
 
    @Inject
    private Inflector inflector;
@@ -141,6 +141,7 @@ public class AngularScaffoldProvider implements ScaffoldProvider
    }
 
    @Override
+   @SuppressWarnings("unchecked")
    public boolean isSetup(ScaffoldSetupContext setupContext)
    {
       String targetDir = setupContext.getTargetDirectory();
@@ -231,7 +232,7 @@ public class AngularScaffoldProvider implements ScaffoldProvider
          // We need this to use contextual naming schemes instead of performing toLowerCase etc. in FTLs.
 
          // Prepare the Freemarker data model
-         Map<String, Object> dataModel = new HashMap<String, Object>();
+         Map<String, Object> dataModel = new HashMap<>();
          dataModel.put("entityName", entityName);
          dataModel.put("pluralizedEntityName", inflector.pluralize(entityName));
          dataModel.put("entityId", entityId);
@@ -245,12 +246,12 @@ public class AngularScaffoldProvider implements ScaffoldProvider
          // Process the Freemarker templates with the Freemarker data model and retrieve the generated resources from
          // the registry.
          WebResourcesFacet web = project.getFacet(WebResourcesFacet.class);
-         ProcessingStrategy strategy = new ProcessTemplateStrategy(web, resourceFactory, project, templateProcessorFactory, dataModel, overwrite);
+         ProcessingStrategy strategy = new ProcessTemplateStrategy(web, resourceFactory, project, templateFactory, dataModel, overwrite);
          List<ScaffoldResource> scaffoldResources = getEntityTemplates(targetDir, entityName, strategy);
          scaffoldResources.add(new ScaffoldResource("/views/detail.html.ftl", targetDir + "/views/" + entityName
-                  + "/detail.html", new DetailTemplateStrategy(web, resourceFactory, project, templateProcessorFactory, dataModel, overwrite)));
+                  + "/detail.html", new DetailTemplateStrategy(web, resourceFactory, project, templateFactory, dataModel, overwrite)));
          scaffoldResources.add(new ScaffoldResource("/views/search.html.ftl", targetDir + "/views/" + entityName
-                  + "/search.html", new SearchTemplateStrategy(web, resourceFactory, project, templateProcessorFactory, dataModel, overwrite)));
+                  + "/search.html", new SearchTemplateStrategy(web, resourceFactory, project, templateFactory, dataModel, overwrite)));
          for (ScaffoldResource scaffoldResource : scaffoldResources) {
             result.add(scaffoldResource.generate());
          }
@@ -371,7 +372,7 @@ public class AngularScaffoldProvider implements ScaffoldProvider
       dataModel.put("projectTitle", StringUtils.uncamelCase(metadata.getProjectName()));
       dataModel.put("targetDir", targetDir);
 
-      ProcessingStrategy strategy = new ProcessTemplateStrategy(web, resourceFactory, project, templateProcessorFactory, dataModel, overwrite);
+      ProcessingStrategy strategy = new ProcessTemplateStrategy(web, resourceFactory, project, templateFactory, dataModel, overwrite);
       for (ScaffoldResource scaffoldResource : getGlobalTemplates(targetDir, strategy)) {
           result.add(scaffoldResource.generate());
       }
@@ -441,7 +442,7 @@ public class AngularScaffoldProvider implements ScaffoldProvider
                   InputStream is = jarFile.getInputStream(jarEntry);
                   // Copy the file into a sub-directory under src/main/templates named after the scaffold provider.
                   Resource<File> templateResource = resourceFactory.create(new File(relativeFilename));
-                  FileResource fileResource = templateResource.reify(FileResource.class);
+                  FileResource<?> fileResource = templateResource.reify(FileResource.class);
                   fileResource.setContents(is);
                }
             }

@@ -11,8 +11,8 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.forge.addon.resource.Resource;
 import org.jboss.forge.addon.resource.ResourceFactory;
-import org.jboss.forge.addon.templates.TemplateProcessor;
-import org.jboss.forge.addon.templates.TemplateProcessorFactory;
+import org.jboss.forge.addon.templates.Template;
+import org.jboss.forge.addon.templates.TemplateFactory;
 import org.jboss.forge.addon.templates.freemarker.FreemarkerTemplate;
 import org.jboss.forge.arquillian.AddonDependency;
 import org.jboss.forge.arquillian.Dependencies;
@@ -41,7 +41,7 @@ public class FreemarkerClientTest {
     private ResourceFactory resourceFactory;
 
     @Inject
-    private TemplateProcessorFactory processorFactory;
+    private TemplateFactory processorFactory;
 
     @Deployment
     @Dependencies({
@@ -66,7 +66,7 @@ public class FreemarkerClientTest {
         Map<String, Object> root = createEntityRootmap(entityAttributeProperties);
 
         Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.NEW_ENTITY_CONTROLLER_JS));
-        TemplateProcessor processor = processorFactory.fromTemplate(new FreemarkerTemplate(templateResource));
+        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
         String output = processor.process(root);
         assertThat(output, IsNull.notNullValue());
     }
@@ -80,7 +80,7 @@ public class FreemarkerClientTest {
         Map<String, Object> root = createEntityRootmap(entityAttributeProperties);
 
         Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.EDIT_ENTITY_CONTROLLER_JS));
-        TemplateProcessor processor = processorFactory.fromTemplate(new FreemarkerTemplate(templateResource));
+        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
         String output = processor.process(root);
         assertThat(output, IsNull.notNullValue());
     }
@@ -94,7 +94,7 @@ public class FreemarkerClientTest {
         Map<String, Object> root = createEntityRootmap(entityAttributeProperties);
 
         Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.SEARCH_ENTITY_CONTROLLER_JS));
-        TemplateProcessor processor = processorFactory.fromTemplate(new FreemarkerTemplate(templateResource));
+        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
         String output = processor.process(root);
         assertThat(output, IsNull.notNullValue());
     }
@@ -108,7 +108,7 @@ public class FreemarkerClientTest {
         Map<String, Object> root = createEntityRootmap(entityAttributeProperties);
 
         Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.ENTITY_FACTORY));
-        TemplateProcessor processor = processorFactory.fromTemplate(new FreemarkerTemplate(templateResource));
+        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
         String output = processor.process(root);
         assertThat(output, IsNull.notNullValue());
     }
@@ -122,7 +122,7 @@ public class FreemarkerClientTest {
         Map<String, Object> root = createEntityRootmap(entityAttributeProperties);
 
         Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.DETAIL_VIEW));
-        TemplateProcessor processor = processorFactory.fromTemplate(new FreemarkerTemplate(templateResource));
+        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
         String output = processor.process(root);
         assertThat(output, IsNull.notNullValue());
     }
@@ -136,7 +136,7 @@ public class FreemarkerClientTest {
         Map<String, Object> root = createEntityRootmap(entityAttributeProperties);
 
         Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.SEARCH_VIEW));
-        TemplateProcessor processor = processorFactory.fromTemplate(new FreemarkerTemplate(templateResource));
+        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
         String output = processor.process(root);
         assertThat(output, IsNull.notNullValue());
     }
@@ -146,7 +146,7 @@ public class FreemarkerClientTest {
         Map<String, Object> root = createGlobalRootmap();
 
         Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.INDEX_PAGE));
-        TemplateProcessor processor = processorFactory.fromTemplate(new FreemarkerTemplate(templateResource));
+        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
         String output = processor.process(root);
         assertThat(output, IsNull.notNullValue());
     }
@@ -156,7 +156,7 @@ public class FreemarkerClientTest {
         Map<String, Object> root = createGlobalRootmap();
 
         Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.APP_JS));
-        TemplateProcessor processor = processorFactory.fromTemplate(new FreemarkerTemplate(templateResource));
+        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
         String output = processor.process(root);
         assertThat(output, IsNull.notNullValue());
     }

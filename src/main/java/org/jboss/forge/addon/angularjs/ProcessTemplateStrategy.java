@@ -6,21 +6,20 @@
  */
 package org.jboss.forge.addon.angularjs;
 
+import static org.jboss.forge.addon.angularjs.AngularScaffoldProvider.SCAFFOLD_DIR;
+
+import java.io.IOException;
+import java.util.Map;
+
 import org.jboss.forge.addon.projects.Project;
 import org.jboss.forge.addon.projects.facets.WebResourcesFacet;
 import org.jboss.forge.addon.resource.Resource;
 import org.jboss.forge.addon.resource.ResourceFactory;
 import org.jboss.forge.addon.scaffold.util.ScaffoldUtil;
 import org.jboss.forge.addon.templates.Template;
-import org.jboss.forge.addon.templates.TemplateProcessor;
-import org.jboss.forge.addon.templates.TemplateProcessorFactory;
+import org.jboss.forge.addon.templates.TemplateFactory;
 import org.jboss.forge.addon.templates.facets.TemplateFacet;
 import org.jboss.forge.addon.templates.freemarker.FreemarkerTemplate;
-
-import java.io.IOException;
-import java.util.Map;
-
-import static org.jboss.forge.addon.angularjs.AngularScaffoldProvider.SCAFFOLD_DIR;
 
 /**
  * A {@link ProcessingStrategy} to process the contents of the {@link ScaffoldResource} from it's source on the
@@ -36,25 +35,25 @@ public class ProcessTemplateStrategy implements ProcessingStrategy
 
    private final Project project;
 
-   private final TemplateProcessorFactory templateProcessorFactory;
+   private final TemplateFactory templateFactory;
 
-   private Map<String, Object> dataModel;
+   private final Map<String, Object> dataModel;
 
-   private boolean overwrite;
+   private final boolean overwrite;
 
    public ProcessTemplateStrategy(WebResourcesFacet web, ResourceFactory resourceFactory, Project project,
-            TemplateProcessorFactory templateProcessorFactory, Map<String, Object> dataModel, boolean overwrite)
+            TemplateFactory templateFactory, Map<String, Object> dataModel, boolean overwrite)
    {
       this.web = web;
       this.resourceFactory = resourceFactory;
       this.project = project;
-      this.templateProcessorFactory = templateProcessorFactory;
+      this.templateFactory = templateFactory;
       this.dataModel = dataModel;
       this.overwrite = overwrite;
    }
 
    @Override
-   public Resource execute(ScaffoldResource scaffoldResource)
+   public Resource<?> execute(ScaffoldResource scaffoldResource)
    {
       Resource<?> resource = resourceFactory.create(getClass().getResource(
                SCAFFOLD_DIR + scaffoldResource.getSource()));
@@ -68,12 +67,11 @@ public class ProcessTemplateStrategy implements ProcessingStrategy
          }
       }
 
-      Template template = new FreemarkerTemplate(resource);
-      TemplateProcessor templateProcessor = templateProcessorFactory.fromTemplate(template);
+      Template template = templateFactory.create(resource, FreemarkerTemplate.class);
       String output = null;
       try
       {
-         output = templateProcessor.process(dataModel);
+         output = template.process(dataModel);
       }
       catch (IOException ioEx)
       {

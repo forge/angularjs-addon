@@ -11,8 +11,8 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.forge.addon.resource.Resource;
 import org.jboss.forge.addon.resource.ResourceFactory;
-import org.jboss.forge.addon.templates.TemplateProcessor;
-import org.jboss.forge.addon.templates.TemplateProcessorFactory;
+import org.jboss.forge.addon.templates.Template;
+import org.jboss.forge.addon.templates.TemplateFactory;
 import org.jboss.forge.addon.templates.freemarker.FreemarkerTemplate;
 import org.jboss.forge.arquillian.AddonDependency;
 import org.jboss.forge.arquillian.Dependencies;
@@ -44,7 +44,7 @@ public class FreemarkerClientPartialsNToOnePropertyTest {
     private ResourceFactory resourceFactory;
 
     @Inject
-    private TemplateProcessorFactory processorFactory;
+    private TemplateFactory processorFactory;
 
     @Deployment
     @Dependencies({
@@ -73,7 +73,7 @@ public class FreemarkerClientPartialsNToOnePropertyTest {
         root.put("entityName", "SampleEntity");
         root.put("property", idProperties);
         Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.N_TO_ONE_PROPERTY_DETAIL_INCLUDE));
-        TemplateProcessor processor = processorFactory.fromTemplate(new FreemarkerTemplate(templateResource));
+        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
         String output = processor.process(root);
         assertThat(output.trim(), IsEqual.equalTo(""));
     }
@@ -92,7 +92,7 @@ public class FreemarkerClientPartialsNToOnePropertyTest {
         root.put("entityName", "SampleEntity");
         root.put("property", idProperties);
         Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.N_TO_ONE_PROPERTY_DETAIL_INCLUDE));
-        TemplateProcessor processor = processorFactory.fromTemplate(new FreemarkerTemplate(templateResource));
+        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
         String output = processor.process(root);
         assertThat(output.trim(), IsEqual.equalTo(""));
     }
@@ -114,7 +114,7 @@ public class FreemarkerClientPartialsNToOnePropertyTest {
         root.put("entityName", entityName);
         root.put("property", voucherProperties);
         Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.N_TO_ONE_PROPERTY_DETAIL_INCLUDE));
-        TemplateProcessor processor = processorFactory.fromTemplate(new FreemarkerTemplate(templateResource));
+        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
         String output = processor.process(root);
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
@@ -153,7 +153,7 @@ public class FreemarkerClientPartialsNToOnePropertyTest {
         root.put("entityName", entityName);
         root.put("property", customerProperties);
         Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.N_TO_ONE_PROPERTY_DETAIL_INCLUDE));
-        TemplateProcessor processor = processorFactory.fromTemplate(new FreemarkerTemplate(templateResource));
+        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
         String output = processor.process(root);
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));

@@ -6,21 +6,20 @@
  */
 package org.jboss.forge.addon.angularjs;
 
-import org.jboss.forge.addon.projects.Project;
-import org.jboss.forge.addon.projects.facets.WebResourcesFacet;
-import org.jboss.forge.addon.resource.Resource;
-import org.jboss.forge.addon.resource.ResourceFactory;
-import org.jboss.forge.addon.templates.Template;
-import org.jboss.forge.addon.templates.TemplateProcessor;
-import org.jboss.forge.addon.templates.TemplateProcessorFactory;
-import org.jboss.forge.addon.templates.facets.TemplateFacet;
-import org.jboss.forge.addon.templates.freemarker.FreemarkerTemplate;
+import static org.jboss.forge.addon.angularjs.AngularScaffoldProvider.SCAFFOLD_DIR;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import static org.jboss.forge.addon.angularjs.AngularScaffoldProvider.SCAFFOLD_DIR;
+import org.jboss.forge.addon.projects.Project;
+import org.jboss.forge.addon.projects.facets.WebResourcesFacet;
+import org.jboss.forge.addon.resource.Resource;
+import org.jboss.forge.addon.resource.ResourceFactory;
+import org.jboss.forge.addon.templates.Template;
+import org.jboss.forge.addon.templates.TemplateFactory;
+import org.jboss.forge.addon.templates.facets.TemplateFacet;
+import org.jboss.forge.addon.templates.freemarker.FreemarkerTemplate;
 
 /**
  * A strategy for generating the detail page with included files.
@@ -34,30 +33,31 @@ public class DetailTemplateStrategy implements ProcessingStrategy
 
    private final WebResourcesFacet web;
 
-   private Project project;
+   private final Project project;
 
-   private Map<String, Object> dataModel;
+   private final Map<String, Object> dataModel;
 
-   private ResourceFactory resourceFactory;
+   private final ResourceFactory resourceFactory;
 
-   private TemplateProcessorFactory templateProcessorFactory;
+   private final TemplateFactory templateFactory;
 
    private final boolean overwrite;
 
    public DetailTemplateStrategy(WebResourcesFacet web, ResourceFactory resourceFactory, Project project,
-            TemplateProcessorFactory templateProcessorFactory, Map<String, Object> dataModel, boolean overwrite)
+            TemplateFactory templateFactory, Map<String, Object> dataModel, boolean overwrite)
    {
       this.web = web;
       this.resourceFactory = resourceFactory;
       this.project = project;
-      this.templateProcessorFactory = templateProcessorFactory;
+      this.templateFactory = templateFactory;
       this.dataModel = dataModel;
       this.overwrite = overwrite;
    }
 
    @Override
-   public Resource execute(ScaffoldResource scaffoldResource)
+   public Resource<?> execute(ScaffoldResource scaffoldResource)
    {
+      @SuppressWarnings("unchecked")
       List<Map<String, String>> properties = (List<Map<String, String>>) dataModel.get("properties");
       StringBuilder formProperties = new StringBuilder();
       for (Map<String, String> property : properties)
@@ -85,13 +85,13 @@ public class DetailTemplateStrategy implements ProcessingStrategy
       }
       dataModel.put("formProperties", formProperties.toString());
       ProcessTemplateStrategy strategy = new ProcessTemplateStrategy(web, resourceFactory, project,
-               templateProcessorFactory, dataModel, overwrite);
+               templateFactory, dataModel, overwrite);
       return strategy.execute(scaffoldResource);
    }
 
    class Include
    {
-      private String source;
+      private final String source;
 
       Include(String source)
       {
@@ -112,12 +112,11 @@ public class DetailTemplateStrategy implements ProcessingStrategy
             }
          }
 
-         Template template = new FreemarkerTemplate(resource);
-         TemplateProcessor templateProcessor = templateProcessorFactory.fromTemplate(template);
+         Template template = templateFactory.create(resource, FreemarkerTemplate.class);
          String output = null;
          try
          {
-            output = templateProcessor.process(dataModel);
+            output = template.process(dataModel);
          }
          catch (IOException ioEx)
          {
