@@ -15,27 +15,23 @@ import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
 import org.jboss.forge.addon.convert.Converter;
-import org.jboss.forge.addon.javaee.ejb.EJBFacet;
-import org.jboss.forge.addon.javaee.ejb.ui.EJBSetupWizard;
 import org.jboss.forge.addon.javaee.jpa.JPAFacet;
-import org.jboss.forge.addon.javaee.jpa.ui.setup.JPASetupWizard;
-import org.jboss.forge.addon.javaee.rest.RestFacet;
 import org.jboss.forge.addon.javaee.rest.generation.RestResourceGenerator;
 import org.jboss.forge.addon.javaee.rest.generator.RestGenerationContextImpl;
 import org.jboss.forge.addon.javaee.rest.generator.impl.EntityBasedResourceGenerator;
-import org.jboss.forge.addon.javaee.rest.ui.setup.RestSetupWizard;
-import org.jboss.forge.addon.javaee.ui.AbstractJavaEECommand;
 import org.jboss.forge.addon.parser.java.facets.JavaSourceFacet;
 import org.jboss.forge.addon.parser.java.resources.JavaResource;
 import org.jboss.forge.addon.projects.Project;
+import org.jboss.forge.addon.projects.ProjectFactory;
+import org.jboss.forge.addon.projects.Projects;
 import org.jboss.forge.addon.resource.Resource;
 import org.jboss.forge.addon.scaffold.spi.ResourceCollection;
 import org.jboss.forge.addon.text.Inflector;
-import org.jboss.forge.addon.ui.command.PrerequisiteCommandsProvider;
 import org.jboss.forge.addon.ui.context.UIBuilder;
 import org.jboss.forge.addon.ui.context.UIContext;
 import org.jboss.forge.addon.ui.context.UIExecutionContext;
 import org.jboss.forge.addon.ui.context.UINavigationContext;
+import org.jboss.forge.addon.ui.context.UIValidationContext;
 import org.jboss.forge.addon.ui.hints.InputType;
 import org.jboss.forge.addon.ui.input.UIInput;
 import org.jboss.forge.addon.ui.input.UISelectOne;
@@ -44,8 +40,6 @@ import org.jboss.forge.addon.ui.metadata.WithAttributes;
 import org.jboss.forge.addon.ui.result.NavigationResult;
 import org.jboss.forge.addon.ui.result.Result;
 import org.jboss.forge.addon.ui.result.Results;
-import org.jboss.forge.addon.ui.result.navigation.NavigationResultBuilder;
-import org.jboss.forge.addon.ui.util.Categories;
 import org.jboss.forge.addon.ui.util.Metadata;
 import org.jboss.forge.addon.ui.wizard.UIWizardStep;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
@@ -53,10 +47,10 @@ import org.jboss.shrinkwrap.descriptor.api.persistence.PersistenceCommonDescript
 import org.jboss.shrinkwrap.descriptor.api.persistence.PersistenceUnitCommon;
 
 /**
- * Created by vineet on 3/25/14.
+ * A wizard step to perform creation of REST resources.
+ * It re-uses services from the Java EE addon to create JAX-RS based REST resources.
  */
-public class JSONRestResourceFromEntityCommand extends AbstractJavaEECommand implements PrerequisiteCommandsProvider,
-         UIWizardStep
+public class JSONRestResourceFromEntityCommand implements UIWizardStep
 {
 
    @Inject
@@ -81,14 +75,22 @@ public class JSONRestResourceFromEntityCommand extends AbstractJavaEECommand imp
    @Inject
    private Inflector inflector;
 
+   @Inject
+   private ProjectFactory projectFactory;
+
    private List<JavaClassSource> targets;
 
    @Override
    public UICommandMetadata getMetadata(UIContext context)
    {
-      return Metadata.from(super.getMetadata(context), getClass()).name("REST: Generate Endpoints From Entities")
-               .description("Generate REST endpoints from JPA entities")
-               .category(Categories.create(super.getMetadata(context).getCategory(), "JAX-RS"));
+      return Metadata.forCommand(getClass()).name("REST: Generate Endpoints From Entities")
+               .description("Generate REST endpoints from JPA entities");
+   }
+
+   @Override
+   public boolean isEnabled(UIContext context)
+   {
+      return true;
    }
 
    @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -184,12 +186,6 @@ public class JSONRestResourceFromEntityCommand extends AbstractJavaEECommand imp
       return classes;
    }
 
-   @Override
-   protected boolean isProjectRequired()
-   {
-      return true;
-   }
-
    private RestGenerationContextImpl createContextFor(final UIContext context)
    {
       RestGenerationContextImpl generationContext = new RestGenerationContextImpl();
@@ -202,31 +198,19 @@ public class JSONRestResourceFromEntityCommand extends AbstractJavaEECommand imp
    }
 
    @Override
-   public NavigationResult getPrerequisiteCommands(UIContext context)
-   {
-      NavigationResultBuilder builder = NavigationResultBuilder.create();
-      Project project = getSelectedProject(context);
-      if (project != null)
-      {
-         if (!project.hasFacet(RestFacet.class))
-         {
-            builder.add(RestSetupWizard.class);
-         }
-         if (!project.hasFacet(JPAFacet.class))
-         {
-            builder.add(JPASetupWizard.class);
-         }
-         if (!project.hasFacet(EJBFacet.class))
-         {
-            builder.add(EJBSetupWizard.class);
-         }
-      }
-      return builder.build();
-   }
-
-   @Override
    public NavigationResult next(UINavigationContext context) throws Exception
    {
       return null;
+   }
+
+   @Override
+   public void validate(UIValidationContext context)
+   {
+      // Do nothing
+   }
+
+   private Project getSelectedProject(UIContext context)
+   {
+      return Projects.getSelectedProject(projectFactory, context);
    }
 }
