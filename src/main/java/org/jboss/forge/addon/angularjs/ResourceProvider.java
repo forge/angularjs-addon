@@ -40,7 +40,7 @@ public class ResourceProvider {
     
     static final String MODERNIZR_JS = "/scripts/vendor/modernizr-2.6.2.min.js";
 
-    static final String JQUERY_JS = "/scripts/vendor/jquery-1.9.1.js";
+    static final String JQUERY_JS = "/scripts/vendor/jquery-2.0.3.js";
     
     static final String BOOTSTRAP_JS = "/scripts/vendor/bootstrap.js";
 
