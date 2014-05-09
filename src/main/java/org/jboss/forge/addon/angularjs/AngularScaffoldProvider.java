@@ -142,14 +142,14 @@ public class AngularScaffoldProvider implements ScaffoldProvider
 
    @Override
    @SuppressWarnings("unchecked")
-   public boolean isSetup(ScaffoldSetupContext setupContext)
+   public boolean isSetup(Project project, ScaffoldSetupContext setupContext)
    {
       String targetDir = setupContext.getTargetDirectory();
       targetDir = targetDir == null ? "" : targetDir;
       if (project.hasAllFacets(WebResourcesFacet.class, DependencyFacet.class, JPAFacet.class, EJBFacet.class,
                CDIFacet.class, RestFacet.class))
       {
-         WebResourcesFacet web = this.project.getFacet(WebResourcesFacet.class);
+         WebResourcesFacet web = project.getFacet(WebResourcesFacet.class);
          boolean areResourcesInstalled = web.getWebResource(targetDir + GLYPHICONS_SVG).exists()
                   && web.getWebResource(targetDir + GLYPHICONS_EOT).exists()
                   && web.getWebResource(targetDir + GLYPHICONS_SVG).exists()
