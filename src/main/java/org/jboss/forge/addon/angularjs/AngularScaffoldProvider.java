@@ -122,9 +122,9 @@ public class AngularScaffoldProvider implements ScaffoldProvider
    }
 
    @Override
-   public List<Resource<?>> setup(Project project, ScaffoldSetupContext setupContext)
+   public List<Resource<?>> setup(ScaffoldSetupContext setupContext)
    {
-      setProject(project);
+      setProject(setupContext.getProject());
       String targetDir = setupContext.getTargetDirectory();
       targetDir = (targetDir == null) ? "" : targetDir;
       boolean overwrite = setupContext.isOverwrite();
@@ -142,8 +142,9 @@ public class AngularScaffoldProvider implements ScaffoldProvider
 
    @Override
    @SuppressWarnings("unchecked")
-   public boolean isSetup(Project project, ScaffoldSetupContext setupContext)
+   public boolean isSetup(ScaffoldSetupContext setupContext)
    {
+      Project project = setupContext.getProject();
       String targetDir = setupContext.getTargetDirectory();
       targetDir = targetDir == null ? "" : targetDir;
       if (project.hasAllFacets(WebResourcesFacet.class, DependencyFacet.class, JPAFacet.class, EJBFacet.class,
@@ -173,14 +174,14 @@ public class AngularScaffoldProvider implements ScaffoldProvider
    }
 
    @Override
-   public List<Resource<?>> generateFrom(Project project, ScaffoldGenerationContext scaffoldGenerationContext)
+   public List<Resource<?>> generateFrom(ScaffoldGenerationContext generationContext)
    {
-      setProject(project);
-      String targetDir = scaffoldGenerationContext.getTargetDirectory();
+      setProject(generationContext.getProject());
+      String targetDir = generationContext.getTargetDirectory();
       targetDir = (targetDir == null) ? "" : targetDir;
-      boolean overwrite = scaffoldGenerationContext.isOverwrite();
+      boolean overwrite = generationContext.isOverwrite();
       List<Resource<?>> result = new ArrayList<>();
-      Collection<Resource<?>> resources = scaffoldGenerationContext.getResources();
+      Collection<Resource<?>> resources = generationContext.getResources();
       for (Resource<?> resource : resources)
       {
          JavaSource<?> javaSource = null;
@@ -263,8 +264,9 @@ public class AngularScaffoldProvider implements ScaffoldProvider
    }
 
    @Override
-   public NavigationResult getSetupFlow(Project project)
+   public NavigationResult getSetupFlow(ScaffoldSetupContext setupContext)
    {
+      Project project = setupContext.getProject();
       NavigationResultBuilder builder = NavigationResultBuilder.create();
       List<Class<? extends UICommand>> setupCommands = new ArrayList<>();
       if (!project.hasFacet(JPAFacet.class))
@@ -300,7 +302,7 @@ public class AngularScaffoldProvider implements ScaffoldProvider
    }
 
    @Override
-   public NavigationResult getGenerationFlow(Project project)
+   public NavigationResult getGenerationFlow(ScaffoldGenerationContext generationContext)
    {
       NavigationResultBuilder builder = NavigationResultBuilder.create();
       builder.add(ScaffoldableEntitySelectionWizard.class);
@@ -314,7 +316,7 @@ public class AngularScaffoldProvider implements ScaffoldProvider
       return null;
    }
 
-   public void setProject(Project project)
+   private void setProject(Project project)
    {
       this.project = project;
    }
