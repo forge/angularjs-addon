@@ -41,17 +41,14 @@ public class DetailTemplateStrategy implements ProcessingStrategy
 
    private final TemplateFactory templateFactory;
 
-   private final boolean overwrite;
-
    public DetailTemplateStrategy(WebResourcesFacet web, ResourceFactory resourceFactory, Project project,
-            TemplateFactory templateFactory, Map<String, Object> dataModel, boolean overwrite)
+            TemplateFactory templateFactory, Map<String, Object> dataModel)
    {
       this.web = web;
       this.resourceFactory = resourceFactory;
       this.project = project;
       this.templateFactory = templateFactory;
       this.dataModel = dataModel;
-      this.overwrite = overwrite;
    }
 
    @Override
@@ -85,7 +82,7 @@ public class DetailTemplateStrategy implements ProcessingStrategy
       }
       dataModel.put("formProperties", formProperties.toString());
       ProcessTemplateStrategy strategy = new ProcessTemplateStrategy(web, resourceFactory, project,
-               templateFactory, dataModel, overwrite);
+               templateFactory, dataModel);
       return strategy.execute(scaffoldResource);
    }
 

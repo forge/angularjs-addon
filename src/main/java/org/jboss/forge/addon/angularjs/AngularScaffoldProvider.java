@@ -127,12 +127,11 @@ public class AngularScaffoldProvider implements ScaffoldProvider
       setProject(setupContext.getProject());
       String targetDir = setupContext.getTargetDirectory();
       targetDir = (targetDir == null) ? "" : targetDir;
-      boolean overwrite = setupContext.isOverwrite();
 
       // Setup static resources.
       ArrayList<Resource<?>> result = new ArrayList<>();
       WebResourcesFacet web = project.getFacet(WebResourcesFacet.class);
-      ProcessingStrategy strategy = new CopyResourcesStrategy(web, overwrite);
+      ProcessingStrategy strategy = new CopyResourcesStrategy(web);
       for (ScaffoldResource scaffoldResource : getStatics(targetDir, strategy)) {
          result.add(scaffoldResource.generate());
       }
@@ -179,7 +178,6 @@ public class AngularScaffoldProvider implements ScaffoldProvider
       setProject(generationContext.getProject());
       String targetDir = generationContext.getTargetDirectory();
       targetDir = (targetDir == null) ? "" : targetDir;
-      boolean overwrite = generationContext.isOverwrite();
       List<Resource<?>> result = new ArrayList<>();
       Collection<Resource<?>> resources = generationContext.getResources();
       for (Resource<?> resource : resources)
@@ -247,18 +245,18 @@ public class AngularScaffoldProvider implements ScaffoldProvider
          // Process the Freemarker templates with the Freemarker data model and retrieve the generated resources from
          // the registry.
          WebResourcesFacet web = project.getFacet(WebResourcesFacet.class);
-         ProcessingStrategy strategy = new ProcessTemplateStrategy(web, resourceFactory, project, templateFactory, dataModel, overwrite);
+         ProcessingStrategy strategy = new ProcessTemplateStrategy(web, resourceFactory, project, templateFactory, dataModel);
          List<ScaffoldResource> scaffoldResources = getEntityTemplates(targetDir, entityName, strategy);
          scaffoldResources.add(new ScaffoldResource("/views/detail.html.ftl", targetDir + "/views/" + entityName
-                  + "/detail.html", new DetailTemplateStrategy(web, resourceFactory, project, templateFactory, dataModel, overwrite)));
+                  + "/detail.html", new DetailTemplateStrategy(web, resourceFactory, project, templateFactory, dataModel)));
          scaffoldResources.add(new ScaffoldResource("/views/search.html.ftl", targetDir + "/views/" + entityName
-                  + "/search.html", new SearchTemplateStrategy(web, resourceFactory, project, templateFactory, dataModel, overwrite)));
+                  + "/search.html", new SearchTemplateStrategy(web, resourceFactory, project, templateFactory, dataModel)));
          for (ScaffoldResource scaffoldResource : scaffoldResources) {
             result.add(scaffoldResource.generate());
          }
       }
 
-      List<Resource<?>> indexResources = generateIndex(targetDir, overwrite);
+      List<Resource<?>> indexResources = generateIndex(targetDir);
       result.addAll(indexResources);
       return result;
    }
@@ -326,10 +324,9 @@ public class AngularScaffoldProvider implements ScaffoldProvider
     * scaffolding run are generated here.
     *
     * @param targetDir The target directory for the generated scaffold artifacts.
-    * @param overwrite A flag that indicates whether existing resources should be overwritten or not.
     * @return A list of generated {@link Resource}s
     */
-   public List<Resource<?>> generateIndex(String targetDir, boolean overwrite)
+   public List<Resource<?>> generateIndex(String targetDir)
    {
       ArrayList<Resource<?>> result = new ArrayList<>();
 
@@ -374,7 +371,7 @@ public class AngularScaffoldProvider implements ScaffoldProvider
       dataModel.put("projectTitle", StringUtils.uncamelCase(metadata.getProjectName()));
       dataModel.put("targetDir", targetDir);
 
-      ProcessingStrategy strategy = new ProcessTemplateStrategy(web, resourceFactory, project, templateFactory, dataModel, overwrite);
+      ProcessingStrategy strategy = new ProcessTemplateStrategy(web, resourceFactory, project, templateFactory, dataModel);
       for (ScaffoldResource scaffoldResource : getGlobalTemplates(targetDir, strategy)) {
           result.add(scaffoldResource.generate());
       }

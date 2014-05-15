@@ -18,18 +18,16 @@ public class CopyResourcesStrategy implements ProcessingStrategy
 {
 
    private final WebResourcesFacet web;
-   private boolean overwrite;
 
-   public CopyResourcesStrategy(WebResourcesFacet web, boolean overwrite)
+   public CopyResourcesStrategy(WebResourcesFacet web)
    {
       this.web = web;
-      this.overwrite = overwrite;
    }
 
    @Override
    public Resource execute(ScaffoldResource scaffoldResource)
    {
       return ScaffoldUtil.createOrOverwrite(web.getWebResource(scaffoldResource.getDestination()), getClass()
-               .getResourceAsStream(scaffoldResource.getSource()), true);
+               .getResourceAsStream(scaffoldResource.getSource()));
    }
 }

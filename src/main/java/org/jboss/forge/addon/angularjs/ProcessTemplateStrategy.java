@@ -39,17 +39,14 @@ public class ProcessTemplateStrategy implements ProcessingStrategy
 
    private final Map<String, Object> dataModel;
 
-   private final boolean overwrite;
-
    public ProcessTemplateStrategy(WebResourcesFacet web, ResourceFactory resourceFactory, Project project,
-            TemplateFactory templateFactory, Map<String, Object> dataModel, boolean overwrite)
+            TemplateFactory templateFactory, Map<String, Object> dataModel)
    {
       this.web = web;
       this.resourceFactory = resourceFactory;
       this.project = project;
       this.templateFactory = templateFactory;
       this.dataModel = dataModel;
-      this.overwrite = overwrite;
    }
 
    @Override
@@ -77,7 +74,6 @@ public class ProcessTemplateStrategy implements ProcessingStrategy
       {
          throw new IllegalStateException(ioEx);
       }
-      return ScaffoldUtil.createOrOverwrite(web.getWebResource(scaffoldResource.getDestination()),
-               output, true);
+      return ScaffoldUtil.createOrOverwrite(web.getWebResource(scaffoldResource.getDestination()), output);
    }
 }

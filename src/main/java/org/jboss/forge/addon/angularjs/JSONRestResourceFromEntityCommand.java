@@ -66,10 +66,6 @@ public class JSONRestResourceFromEntityCommand implements UIWizardStep
    private UIInput<String> packageName;
 
    @Inject
-   @WithAttributes(label = "Overwrite existing classes?", enabled = false, defaultValue = "false")
-   private UIInput<Boolean> overwrite;
-
-   @Inject
    private EntityBasedResourceGenerator defaultResourceGenerator;
 
    @Inject
@@ -140,8 +136,7 @@ public class JSONRestResourceFromEntityCommand implements UIWizardStep
       }
       builder.add(generator)
                .add(packageName)
-               .add(persistenceUnit)
-               .add(overwrite);
+               .add(persistenceUnit);
    }
 
    @Override
