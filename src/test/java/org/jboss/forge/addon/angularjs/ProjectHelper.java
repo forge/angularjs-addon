@@ -32,6 +32,7 @@ import org.jboss.forge.addon.javaee.jpa.JPAFieldOperations;
 import org.jboss.forge.addon.javaee.jpa.PersistenceOperations;
 import org.jboss.forge.addon.javaee.servlet.ServletFacet_3_1;
 import org.jboss.forge.addon.javaee.validation.ValidationFacet;
+import org.jboss.forge.addon.parser.java.beans.FieldOperations;
 import org.jboss.forge.addon.parser.java.facets.JavaSourceFacet;
 import org.jboss.forge.addon.parser.java.projects.JavaProjectType;
 import org.jboss.forge.addon.parser.java.projects.JavaWebProjectType;
@@ -71,7 +72,10 @@ public class ProjectHelper
    private PersistenceOperations persistenceOperations;
 
    @Inject
-   private JPAFieldOperations fieldOperations;
+   private FieldOperations fieldOperations;
+
+   @Inject
+   private JPAFieldOperations jpaFieldOperations;
 
    /**
     * Creates a project installing the required facets from
@@ -198,7 +202,7 @@ public class ProjectHelper
             String type, String inverseFieldName, FetchType fetchType, boolean required,
             Iterable<CascadeType> cascadeTypes) throws FileNotFoundException
    {
-      fieldOperations.newOneToOneRelationship(project, javaResource, fieldName, type, inverseFieldName, fetchType,
+      jpaFieldOperations.newOneToOneRelationship(project, javaResource, fieldName, type, inverseFieldName, fetchType,
                required, cascadeTypes);
    }
 
@@ -206,7 +210,7 @@ public class ProjectHelper
             String type, String inverseFieldName, FetchType fetchType, boolean required,
             Iterable<CascadeType> cascadeTypes) throws FileNotFoundException
    {
-      fieldOperations.newManyToOneRelationship(project, javaResource, fieldName, type, inverseFieldName, fetchType,
+      jpaFieldOperations.newManyToOneRelationship(project, javaResource, fieldName, type, inverseFieldName, fetchType,
                required, cascadeTypes);
    }
 
@@ -214,7 +218,7 @@ public class ProjectHelper
             String type, String inverseFieldName, FetchType fetchType,
             Iterable<CascadeType> cascadeTypes) throws FileNotFoundException
    {
-      fieldOperations.newOneToManyRelationship(project, javaResource, fieldName, type, inverseFieldName, fetchType,
+      jpaFieldOperations.newOneToManyRelationship(project, javaResource, fieldName, type, inverseFieldName, fetchType,
                cascadeTypes);
    }
 
@@ -222,7 +226,7 @@ public class ProjectHelper
             String type, String inverseFieldName, FetchType fetchType,
             Iterable<CascadeType> cascadeTypes) throws FileNotFoundException
    {
-      fieldOperations.newManyToManyRelationship(project, javaResource, fieldName, type, inverseFieldName, fetchType,
+      jpaFieldOperations.newManyToManyRelationship(project, javaResource, fieldName, type, inverseFieldName, fetchType,
                cascadeTypes);
    }
 

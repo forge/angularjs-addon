@@ -16,9 +16,9 @@ import javax.ws.rs.core.MediaType;
 
 import org.jboss.forge.addon.convert.Converter;
 import org.jboss.forge.addon.javaee.jpa.JPAFacet;
+import org.jboss.forge.addon.javaee.rest.generation.RestGenerationConstants;
+import org.jboss.forge.addon.javaee.rest.generation.RestGenerationContext;
 import org.jboss.forge.addon.javaee.rest.generation.RestResourceGenerator;
-import org.jboss.forge.addon.javaee.rest.generator.RestGenerationContextImpl;
-import org.jboss.forge.addon.javaee.rest.generator.impl.EntityBasedResourceGenerator;
 import org.jboss.forge.addon.parser.java.facets.JavaSourceFacet;
 import org.jboss.forge.addon.parser.java.resources.JavaResource;
 import org.jboss.forge.addon.projects.Project;
@@ -42,6 +42,7 @@ import org.jboss.forge.addon.ui.result.Result;
 import org.jboss.forge.addon.ui.result.Results;
 import org.jboss.forge.addon.ui.util.Metadata;
 import org.jboss.forge.addon.ui.wizard.UIWizardStep;
+import org.jboss.forge.furnace.services.Imported;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.shrinkwrap.descriptor.api.persistence.PersistenceCommonDescriptor;
 import org.jboss.shrinkwrap.descriptor.api.persistence.PersistenceUnitCommon;
@@ -66,7 +67,7 @@ public class JSONRestResourceFromEntityCommand implements UIWizardStep
    private UIInput<String> packageName;
 
    @Inject
-   private EntityBasedResourceGenerator defaultResourceGenerator;
+   private Imported<RestResourceGenerator> resourceGenerators;
 
    @Inject
    private Inflector inflector;
@@ -111,6 +112,14 @@ public class JSONRestResourceFromEntityCommand implements UIWizardStep
       // TODO: May detect where @Path resources are located
       packageName.setDefaultValue(javaSourceFacet.getBasePackage() + ".rest");
 
+      RestResourceGenerator defaultResourceGenerator = null;
+      for (RestResourceGenerator generator : resourceGenerators)
+      {
+         if (generator.getName().equals(RestGenerationConstants.JPA_ENTITY))
+         {
+            defaultResourceGenerator = generator;
+         }
+      }
       generator.setDefaultValue(defaultResourceGenerator);
       if (context.getProvider().isGUI())
       {
@@ -154,7 +163,7 @@ public class JSONRestResourceFromEntityCommand implements UIWizardStep
          targets.add(javaClass);
       }
 
-      RestGenerationContextImpl generationContext = createContextFor(uiContext);
+      RestGenerationContext generationContext = createContextFor(uiContext);
       Set<JavaClassSource> endpoints = generateEndpoints(generationContext);
       Project project = generationContext.getProject();
       JavaSourceFacet javaSourceFacet = project.getFacet(JavaSourceFacet.class);
@@ -168,7 +177,7 @@ public class JSONRestResourceFromEntityCommand implements UIWizardStep
       return Results.success("Endpoint created");
    }
 
-   private Set<JavaClassSource> generateEndpoints(RestGenerationContextImpl generationContext) throws Exception
+   private Set<JavaClassSource> generateEndpoints(RestGenerationContext generationContext) throws Exception
    {
       RestResourceGenerator selectedGenerator = generator.getValue();
       Set<JavaClassSource> classes = new HashSet<>();
@@ -181,9 +190,9 @@ public class JSONRestResourceFromEntityCommand implements UIWizardStep
       return classes;
    }
 
-   private RestGenerationContextImpl createContextFor(final UIContext context)
+   private RestGenerationContext createContextFor(final UIContext context)
    {
-      RestGenerationContextImpl generationContext = new RestGenerationContextImpl();
+      RestGenerationContext generationContext = new RestGenerationContext();
       generationContext.setProject(getSelectedProject(context));
       generationContext.setContentType(MediaType.APPLICATION_JSON);
       generationContext.setPersistenceUnitName(persistenceUnit.getValue());
