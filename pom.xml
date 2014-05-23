@@ -19,6 +19,11 @@
       <version.furnace>2.6.0.Final</version.furnace>
       <version.metawidget>2.4</version.metawidget>
       <version.shrinkwrap.resolvers>2.1.0</version.shrinkwrap.resolvers>
+
+      <!-- Build Info -->
+      <forge.angularjs.scm.connection>scm:git:git://github.com/forge/angularjs-addon.git</forge.angularjs.scm.connection>
+      <forge.angularjs.developer.connection>scm:git:git@github.com:forge/angularjs-addon.git</forge.angularjs.developer.connection>
+      <forge.angularjs.scm.url>http://github.com/forge/angularjs-addon</forge.angularjs.scm.url>
    </properties>
    <dependencyManagement>
       <dependencies>
@@ -148,4 +153,11 @@
          </plugin>
       </plugins>
    </build>
+
+   <scm>
+      <connection>${forge.angularjs.scm.connection}</connection>
+      <developerConnection>${forge.angularjs.developer.connection}</developerConnection>
+      <url>${forge.angularjs.scm.url}</url>
+      <tag>HEAD</tag>
+   </scm>
 </project>
