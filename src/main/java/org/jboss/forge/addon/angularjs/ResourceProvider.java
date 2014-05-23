@@ -57,6 +57,8 @@ public class ResourceProvider {
      * 
      * @param targetDir The target directory that serves as the root directory of the destination for the generated resources to
      *        be copied to.
+     * @param strategy The {@link ProcessingStrategy} to use for processing the static file. Usually this involves a strategy to copy
+     *        files from a source to destination.
      * @return A list of {@link ScaffoldResource}s representing static files that are to be copied upon scaffolding setup.
      */
     public static List<ScaffoldResource> getStatics(String targetDir, ProcessingStrategy strategy) {
@@ -86,6 +88,8 @@ public class ResourceProvider {
      * 
      * @param targetDir The target directory that serves as the root directory of the destination for the generated resources to
      *        be written to.
+     * @param strategy The {@link ProcessingStrategy} to use for processing the static file. Usually this involves a strategy to process
+     *        the file as a Freemarker template before copying it from a source to destination.
      * @return A list of {@link ScaffoldResource}s representing Freemarker templates that are to be processed only once for a
      *         scaffold generation run.
      */
@@ -116,6 +120,8 @@ public class ResourceProvider {
      * @param targetDir The target directory that serves as the root directory of the destination for the generated resources to
      *        be written to.
      * @param entityName The name of the JPA entity
+     * @param strategy The {@link ProcessingStrategy} to use for processing the static file. Usually this involves a strategy to process
+     *        the file as a Freemarker template before copying it from a source to destination.
      * @return A list of {@link ScaffoldResource}s representing Freemarker templates that are to be processed for every entity
      *         during a scaffold generation run.
      */

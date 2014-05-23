@@ -35,7 +35,7 @@ import org.metawidget.util.simple.StringUtils;
 /**
  * An 'Inspection Result Processor' that enhances the inspection results provided by Metawidget. This class does not
  * implement the {@link org.metawidget.inspectionresultprocessor.iface.InspectionResultProcessor} of Metawidget since it
- * needs access to the injected Forge {@link ShellPrompt} instance.
+ * subverts the Metawidget pipeline.
  *
  * This processor enhances the inspection results with HTML form labels for the inspected properties. It canonicalizes
  * all numerical types to the HTML5 'number' form input type.
@@ -86,7 +86,7 @@ public class InspectionResultProcessor
    /**
     * Provides the Id of the JPA entity as obtained during inspection by Metawidget.
     *
-    * @param entity The {@link org.jboss.forge.parser.java.JavaClass} representing the JPA entity.
+    * @param entity The {@link org.jboss.forge.roaster.model.JavaClass} representing the JPA entity.
     * @param inspectionResults A list representing the inspection results for each property of the entity
     * @return The name of the property in the entity representing the entity {@link javax.persistence.Id} aka the
     *         primary key.
