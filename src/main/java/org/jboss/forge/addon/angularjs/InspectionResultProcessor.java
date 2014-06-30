@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
 
 import org.jboss.forge.addon.parser.java.facets.JavaSourceFacet;
 import org.jboss.forge.addon.parser.java.resources.JavaResource;
@@ -28,6 +31,7 @@ import org.jboss.forge.addon.projects.Project;
 import org.jboss.forge.addon.scaffold.metawidget.MetawidgetInspectorFacade;
 import org.jboss.forge.addon.scaffold.metawidget.inspector.ForgeInspectionResultConstants;
 import org.jboss.forge.roaster.model.JavaClass;
+import org.jboss.forge.roaster.model.Member;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.metawidget.inspector.InspectionResultConstants;
 import org.metawidget.util.simple.StringUtils;
@@ -60,9 +64,16 @@ public class InspectionResultProcessor
    {
       Iterator<Map<String, String>> iterInspectionResults = inspectionResults.iterator();
       List<Map<String, String>> additionalPropertyAttributes = new ArrayList<Map<String, String>>();
-      for (; iterInspectionResults.hasNext();)
+      while(iterInspectionResults.hasNext())
       {
          Map<String, String> propertyAttributes = iterInspectionResults.next();
+         // FORGEPLUGINS-120 Omit references to classes having composite keys
+         if(shouldOmitPropertyWithCompositeKey(propertyAttributes))
+         {
+            iterInspectionResults.remove();
+            continue;
+         }
+         // Expand @Embedded properties
          List<Map<String, String>> expandedPropertyAttributes = expandEmbeddableTypes(propertyAttributes);
          if (expandedPropertyAttributes != null)
          {
@@ -222,6 +233,41 @@ public class InspectionResultProcessor
          fieldsToDisplay.add(new InspectedProperty(displayableProperty));
       }
       return fieldsToDisplay;
+   }
+
+   private boolean shouldOmitPropertyWithCompositeKey(Map<String,String> propertyAttributes)
+   {
+      // Extract simple type name of the relationship types
+      boolean isManyToOneRel = Boolean.parseBoolean(propertyAttributes.get("many-to-one"));
+      boolean isOneToOneRel = Boolean.parseBoolean(propertyAttributes.get("one-to-one"));
+      boolean isNToManyRel = Boolean.parseBoolean(propertyAttributes.get("n-to-many"));
+      if (isManyToOneRel || isNToManyRel || isOneToOneRel)
+      {
+         String rightHandSideType;
+         // Obtain the class name of the other/right-hand side of the relationship.
+         if (isOneToOneRel || isManyToOneRel)
+         {
+            rightHandSideType = propertyAttributes.get("type");
+         }
+         else
+         {
+            rightHandSideType = propertyAttributes.get("parameterized-type");
+         }
+         JavaClassSource javaClass = getJavaClass(rightHandSideType);
+         for (Member<?> member : javaClass.getMembers())
+         {
+            // FORGEPLUGINS-120 Ensure that properties with composite keys are detected and omitted from generation
+            if (member.hasAnnotation(Id.class) && !javaClass.hasAnnotation(IdClass.class))
+            {
+               return false;
+            }
+            if (member.hasAnnotation(EmbeddedId.class))
+            {
+               return true;
+            }
+         }
+      }
+      return false;
    }
 
    private class InspectedProperty
