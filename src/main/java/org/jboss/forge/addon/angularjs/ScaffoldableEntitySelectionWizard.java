@@ -6,9 +6,12 @@
  */
 package org.jboss.forge.addon.angularjs;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.persistence.Id;
 
 import org.jboss.forge.addon.convert.Converter;
 import org.jboss.forge.addon.javaee.jpa.JPAFacet;
@@ -30,6 +33,7 @@ import org.jboss.forge.addon.ui.result.NavigationResult;
 import org.jboss.forge.addon.ui.result.Result;
 import org.jboss.forge.addon.ui.util.Metadata;
 import org.jboss.forge.addon.ui.wizard.UIWizardStep;
+import org.jboss.forge.roaster.model.Member;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 
 public class ScaffoldableEntitySelectionWizard implements UIWizardStep
@@ -88,7 +92,21 @@ public class ScaffoldableEntitySelectionWizard implements UIWizardStep
       Project project = getSelectedProject(uiContext);
 
       JPAFacet<?> persistenceFacet = project.getFacet(JPAFacet.class);
-      targets.setValueChoices(persistenceFacet.getAllEntities());
+      List<JavaClassSource> allEntities = persistenceFacet.getAllEntities();
+      List<JavaClassSource> supportedEntities = new ArrayList<>();
+      for (JavaClassSource entity: allEntities)
+      {
+         for (Member<?> member : entity.getMembers())
+         {
+            // FORGE-823 Only add entities with @Id as valid entities for REST resource generation.
+            // Composite keys are not yet supported.
+            if (member.hasAnnotation(Id.class))
+            {
+               supportedEntities.add(entity);
+            }
+         }
+      }
+      targets.setValueChoices(supportedEntities);
       targets.setItemLabelConverter(new Converter<JavaClassSource, String>()
       {
          @Override

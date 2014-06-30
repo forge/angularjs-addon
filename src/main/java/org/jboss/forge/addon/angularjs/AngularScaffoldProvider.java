@@ -42,6 +42,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import javax.inject.Inject;
+import javax.persistence.Id;
 
 import org.jboss.forge.addon.facets.FacetFactory;
 import org.jboss.forge.addon.javaee.cdi.CDIFacet;
@@ -79,6 +80,7 @@ import org.jboss.forge.addon.ui.result.NavigationResult;
 import org.jboss.forge.addon.ui.result.navigation.NavigationResultBuilder;
 import org.jboss.forge.addon.ui.util.Metadata;
 import org.jboss.forge.roaster.model.JavaClass;
+import org.jboss.forge.roaster.model.Member;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
 import org.jboss.shrinkwrap.descriptor.api.webapp30.WebAppDescriptor;
