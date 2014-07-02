@@ -204,18 +204,16 @@ public class AngularScaffoldProvider implements ScaffoldProvider
 
          JavaClassSource entity = (JavaClassSource) javaSource;
          String resourceRootPath = getRootResourcePath(project);
+         // Fetch the REST resource path from the existing JAX-RS resource if found.
          String entityResourcePath = parseResourcePath(entity);
+         // If the path is not available, construct a default one from the JPA entity name
+         // We'll let the user resolve the incorrect path later,
+         // if needed through regeneration of the JAX-RS resources.
          String entityName = entity.getName();
          if (entityResourcePath == null || entityResourcePath.isEmpty())
          {
             entityResourcePath = inflector.pluralize(entityName.toLowerCase());
          }
-         /*
-          * TODO Generate REST resources and then obtain the REST URIs.
-          * entityResourcePath = prompt.prompt("What REST URI under /" +
-          * resourceRootPath + " should be used to locate instances of type [" + klass.getQualifiedName() + "] ?",
-          * entityResourcePath);
-          */
          entityResourcePath = trimSlashes(entityResourcePath);
 
          // Inspect the JPA entity and obtain a list of inspection results. Every inspected property is represented as a
@@ -306,7 +304,6 @@ public class AngularScaffoldProvider implements ScaffoldProvider
    {
       NavigationResultBuilder builder = NavigationResultBuilder.create();
       builder.add(ScaffoldableEntitySelectionWizard.class);
-      builder.add(JSONRestResourceFromEntityCommand.class);
       return builder.build();
    }
 
