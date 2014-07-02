@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.jboss.forge.addon.angularjs.AngularScaffoldProvider;
 import org.jboss.forge.addon.angularjs.matchers.InspectionResultMatcher;
+import org.jboss.forge.addon.angularjs.util.RestResourceTypeVisitor;
 import org.jboss.forge.arquillian.archive.ForgeArchive;
 import org.jboss.forge.furnace.repositories.AddonDependencyEntry;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -18,6 +19,7 @@ public class Deployments {
                 .addClass(InspectionResultMatcher.class)
 				.addAsLibrary(Maven.resolver().resolve("org.jsoup:jsoup:1.7.1").withTransitivity().asSingleFile())
 				.addPackage(AngularScaffoldProvider.class.getPackage())
+                .addClass(RestResourceTypeVisitor.class)
 				.addAsResources(Deployments.BASE_PACKAGE,
 						Deployments.NEW_ENTITY_CONTROLLER_JS,
 						Deployments.EDIT_ENTITY_CONTROLLER_JS,
