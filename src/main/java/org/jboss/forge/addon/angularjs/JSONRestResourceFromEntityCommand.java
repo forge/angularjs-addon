@@ -7,6 +7,7 @@
 package org.jboss.forge.addon.angularjs;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -194,7 +195,7 @@ public class JSONRestResourceFromEntityCommand implements UIWizardStep
    {
       RestGenerationContext generationContext = new RestGenerationContext();
       generationContext.setProject(getSelectedProject(context));
-      generationContext.setContentType(MediaType.APPLICATION_JSON);
+      generationContext.setContentType(Arrays.asList(MediaType.APPLICATION_JSON));
       generationContext.setPersistenceUnitName(persistenceUnit.getValue());
       generationContext.setTargetPackageName(packageName.getValue());
       generationContext.setInflector(inflector);
