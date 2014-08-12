@@ -16,7 +16,7 @@
       <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
 
       <version.forge.descriptors>0.0.4.Final</version.forge.descriptors>
-      <version.furnace>2.7.1-SNAPSHOT</version.furnace>
+      <version.furnace>2.7.2.Final</version.furnace>
       <version.metawidget>2.4</version.metawidget>
       <version.shrinkwrap.resolvers>2.1.0</version.shrinkwrap.resolvers>
 
