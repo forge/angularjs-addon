@@ -8,7 +8,7 @@
    </parent>
    <groupId>org.jboss.forge.addon</groupId>
    <artifactId>angularjs</artifactId>
-   <version>2.1.1.Final</version>
+   <version>2.1.2-SNAPSHOT</version>
    <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <maven.compiler.source>1.7</maven.compiler.source>
@@ -158,6 +158,6 @@
       <connection>${forge.angularjs.scm.connection}</connection>
       <developerConnection>${forge.angularjs.developer.connection}</developerConnection>
       <url>${forge.angularjs.scm.url}</url>
-      <tag>2.1.1.Final</tag>
+      <tag>HEAD</tag>
    </scm>
 </project>
