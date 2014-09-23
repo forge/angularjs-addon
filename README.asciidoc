@@ -149,3 +149,8 @@ $ scaffold-generate --provider AngularJS --targets org.hello.angular.model.Custo
 ----
 
 This app can now be deployed to JBoss EAP.
+
+== Issue Tracker
+
+We do not use GitHub issues for issue tracking.
+Please raise issues in the https://issues.jboss.org//secure/CreateIssueDetails!init.jspa?pid=12312020&components=12317568&issuetype=1&priority=3[JBoss JIRA Issue tracker]. The project and component is *FORGEPLUGINS* and *AngularJS Scaffold* respectively. We also track feature requests in the same space.
