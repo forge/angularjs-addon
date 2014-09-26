@@ -56,7 +56,7 @@
         </div>
     </div>
     
-    <script src="scripts/vendor/modernizr-2.6.2.min.js"></script>
+    <script src="scripts/vendor/modernizr-2.8.3.min.js"></script>
     <script src="scripts/vendor/jquery-2.0.3.js"></script>
     <script src="scripts/vendor/bootstrap.js"></script>
     <script src="scripts/vendor/angular.js"></script>
