@@ -10,6 +10,10 @@
             <select id="${property.name}" name="${property.name}" class="form-control" ng-model="search.${property.name}" ng-options="${collectionVar} as ${collectionVar}.${property.optionLabel} for ${collectionVar} in ${collection}">
                 <option value="">Choose a ${propertyLabel}</option>
             </select>
+            <#elseif property.type == "boolean">
+            <select id="${property.name}" name="${property.name}" class="form-control" ng-model="search.${property.name}" ng-options="${collectionVar} as ${collectionVar} for ${collectionVar} in ${collection}">
+                <option value="">Choose a ${propertyLabel}</option>
+            </select>
             <#elseif property["lookup"]??>
             <select id="${property.name}" name="${property.name}" class="form-control" ng-model="search.${property.name}" ng-options="${collectionVar} as ${collectionVar} for ${collectionVar} in ${collection}">
                 <option value="">Choose a ${propertyLabel}</option>

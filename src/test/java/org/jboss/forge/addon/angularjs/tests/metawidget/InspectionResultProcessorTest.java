@@ -179,6 +179,22 @@ public class InspectionResultProcessorTest
    }
 
    @Test
+   public void testInspectBooleanWrapperField() throws Exception
+   {
+      String entityName = "Customer";
+      String fieldName = "optForMail";
+      generateSimpleEntity(entityName);
+      generateBooleanWrapperField(fieldName);
+
+      JavaClassSource klass = getJavaClassFor(entityName);
+      List<Map<String, String>> inspectionResult = metawidgetInspectorFacade.inspect(klass);
+      inspectionResult = angularResultEnhancer.enhanceResults(klass, inspectionResult);
+
+      assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
+      assertThat(inspectionResult, hasItemWithEntry("type", "boolean"));
+   }
+
+   @Test
    public void testInspectDateField() throws Exception
    {
       String entityName = "Customer";
@@ -543,6 +559,12 @@ public class InspectionResultProcessorTest
    private void generateBooleanField(String fieldName) throws Exception
    {
       projectHelper.createBooleanField(entityClass, fieldName);
+      saveJavaSource();
+   }
+
+   private void generateBooleanWrapperField(String fieldName) throws Exception
+   {
+      projectHelper.createBooleanWrapperField(entityClass, fieldName);
       saveJavaSource();
    }
 

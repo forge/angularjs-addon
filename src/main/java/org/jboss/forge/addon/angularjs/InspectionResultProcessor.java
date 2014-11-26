@@ -8,10 +8,7 @@ package org.jboss.forge.addon.angularjs;
 
 import static org.jboss.forge.addon.angularjs.AngularJSInspectionResultConstants.JS_IDENTIFIER;
 import static org.jboss.forge.addon.scaffold.metawidget.inspector.ForgeInspectionResultConstants.PRIMARY_KEY;
-import static org.metawidget.inspector.InspectionResultConstants.DATETIME_TYPE;
-import static org.metawidget.inspector.InspectionResultConstants.LABEL;
-import static org.metawidget.inspector.InspectionResultConstants.NAME;
-import static org.metawidget.inspector.InspectionResultConstants.TYPE;
+import static org.metawidget.inspector.InspectionResultConstants.*;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -87,7 +84,7 @@ public class InspectionResultProcessor
       {
          createJavaScriptIdentifiers(propertyAttributes);
          populateLabelStrings(propertyAttributes);
-         canonicalizeNumberTypes(propertyAttributes);
+         canonicalizeTypes(propertyAttributes);
          canonicalizeTemporalTypes(propertyAttributes);
          chooseRelationshipOptionLabels(entity, propertyAttributes);
       }
@@ -159,7 +156,7 @@ public class InspectionResultProcessor
       }
    }
 
-   private void canonicalizeNumberTypes(Map<String, String> propertyAttributes)
+   private void canonicalizeTypes(Map<String, String> propertyAttributes)
    {
       // Canonicalize all numerical types in Java to "number" for HTML5 form input type support
       String propertyType = propertyAttributes.get(TYPE);
@@ -170,6 +167,11 @@ public class InspectionResultProcessor
                || propertyType.equals(Float.class.getName()) || propertyType.equals(Double.class.getName()))
       {
          propertyAttributes.put(TYPE, "number");
+      }
+      if (propertyType.equals(boolean.class.getName()) || propertyType.equals(Boolean.class.getName()))
+      {
+         propertyAttributes.put(TYPE, "boolean");
+         propertyAttributes.remove(LOOKUP);
       }
    }
 
@@ -303,7 +305,7 @@ public class InspectionResultProcessor
       List<Map<String, String>> displayableProperties = new ArrayList<Map<String, String>>();
       for (Map<String, String> propertyAttributes : inspectionResults)
       {
-         canonicalizeNumberTypes(propertyAttributes);
+         canonicalizeTypes(propertyAttributes);
          canonicalizeTemporalTypes(propertyAttributes);
          boolean isManyToOneRel = Boolean.parseBoolean(propertyAttributes.get("many-to-one"));
          boolean isOneToOneRel = Boolean.parseBoolean(propertyAttributes.get("one-to-one"));

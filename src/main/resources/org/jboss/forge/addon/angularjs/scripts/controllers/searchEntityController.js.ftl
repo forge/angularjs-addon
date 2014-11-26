@@ -37,6 +37,13 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
         relatedCollection = "$scope.${property.identifier}List"
         relatedResource = "${property.simpleType}Resource">
     ${relatedCollection} = ${relatedResource}.queryAll();
+    <#elseif property.type == "boolean">
+        <#assign
+        lookupCollection = "$scope.${property.identifier}List">
+    ${lookupCollection} = [
+        "true",
+        "false"
+    ];
     <#elseif property["lookup"]??>
     <#assign
         lookupCollection = "$scope.${property.identifier}List">

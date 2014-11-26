@@ -169,6 +169,12 @@ public class ProjectHelper
       return fieldOperations.addFieldTo(entityClass, boolean.class.getSimpleName(), fieldName);
    }
 
+   public FieldSource<JavaClassSource> createBooleanWrapperField(JavaClassSource entityClass, String fieldName)
+            throws FileNotFoundException
+   {
+      return fieldOperations.addFieldTo(entityClass, Boolean.class.getSimpleName(), fieldName);
+   }
+
    public Field<JavaClassSource> createTemporalField(JavaClassSource entityClass, String fieldName, TemporalType type)
             throws FileNotFoundException
    {

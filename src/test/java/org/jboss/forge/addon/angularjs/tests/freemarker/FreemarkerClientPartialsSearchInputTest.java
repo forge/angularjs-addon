@@ -140,6 +140,24 @@ public class FreemarkerClientPartialsSearchInputTest {
     }
 
     @Test
+    public void testGenerateBasicBooleanProperty() throws Exception {
+        Map<String, Object> root = TestHelpers.createInspectionResultWrapper(ENTITY_NAME, BOOLEAN_PROP);
+
+        Resource<URL> templateResource = resourceFactory.create(getClass().getResource(Deployments.BASE_PACKAGE_PATH + Deployments.SEARCH_FORM_INPUT));
+        Template processor = processorFactory.create(templateResource, FreemarkerTemplate.class);
+        String output = processor.process(root);
+        Document html = Jsoup.parseBodyFragment(output);
+        assertThat(output.trim(), not(equalTo("")));
+
+        Elements container = html.select("div.form-group");
+        assertThat(container, notNullValue());
+
+        Elements formInputElement = container.select("div.col-sm-10 > select");
+        assertThat(formInputElement.attr("id"), equalTo("optForMail"));
+        assertThat(formInputElement.attr("ng-model"), equalTo("search" + "." + "optForMail"));
+    }
+
+    @Test
     public void testGenerateBasicDateProperty() throws Exception {
         Map<String, Object> root = TestHelpers.createInspectionResultWrapper(ENTITY_NAME, DATE_PROP);
 

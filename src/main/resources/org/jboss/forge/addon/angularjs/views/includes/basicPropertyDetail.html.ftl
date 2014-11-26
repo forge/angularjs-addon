@@ -26,7 +26,7 @@
                 <#elseif property.type == "boolean"> type="checkbox"<#t/>
                 <#else> type="text"</#if><#t/>
                 <#if (property.required!"false") == "true"> required</#if><#t/>
-                <#if property["maximum-length"]??> ng-maxlength="${property["maximum-length"]}"</#if><#if property["minimum-length"]??> ng-minlength="${property["minimum-length"]}"</#if><#lt/> class="form-control" ng-model="${modelProperty}" placeholder="Enter the ${entityName} ${propertyLabel}"></input>
+                <#if property["maximum-length"]??> ng-maxlength="${property["maximum-length"]}"</#if><#if property["minimum-length"]??> ng-minlength="${property["minimum-length"]}"</#if><#lt/><#if property.type == "boolean"> class="checkbox"<#else>class="form-control"</#if><#lt/> ng-model="${modelProperty}" placeholder="Enter the ${entityName} ${propertyLabel}"></input>
             </#if>
             <#if (property.required!) == "true">
             <span class="help-block error" ng-show="${formProperty}.$error.required">required</span> 

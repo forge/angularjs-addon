@@ -138,6 +138,13 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
             });
         }
     });
+    <#elseif property.type == "boolean">
+        <#assign
+        lookupCollection = "$scope.${property.identifier}List">
+    ${lookupCollection} = [
+        "true",
+        "false"
+    ];
     <#elseif property["lookup"]??>
     <#assign
             lookupCollection = "$scope.${property.identifier}List">
