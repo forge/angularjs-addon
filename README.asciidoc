@@ -1,5 +1,8 @@
-== angularjs-addon
+== AngularJS Addon for JBoss Forge 2
 :idprefix: id_ 
+
+image:https://travis-ci.org/forge/angularjs-addon.svg?branch=master["Build Status", link="https://travis-ci.org/forge/angularjs-addon"]
+
 The angularjs-addon enables developers to automate several tasks in the construction of applications that use AngularJS, in JBoss Forge.
 This addon provides *standalone* functionality, and it can be re-used in other addons.
         
