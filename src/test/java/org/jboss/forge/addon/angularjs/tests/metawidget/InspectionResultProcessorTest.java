@@ -27,9 +27,9 @@ import org.jboss.forge.addon.parser.java.facets.JavaSourceFacet;
 import org.jboss.forge.addon.parser.java.resources.JavaResource;
 import org.jboss.forge.addon.projects.Project;
 import org.jboss.forge.addon.scaffold.metawidget.MetawidgetInspectorFacade;
+import org.jboss.forge.arquillian.AddonDependencies;
 import org.jboss.forge.arquillian.AddonDependency;
-import org.jboss.forge.arquillian.Dependencies;
-import org.jboss.forge.arquillian.archive.ForgeArchive;
+import org.jboss.forge.arquillian.archive.AddonArchive;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public class InspectionResultProcessorTest
    private MetawidgetInspectorFacade metawidgetInspectorFacade;
 
    @Deployment
-   @Dependencies({
+   @AddonDependencies({
             @AddonDependency(name = "org.jboss.forge.addon:projects"),
             @AddonDependency(name = "org.jboss.forge.addon:maven"),
             @AddonDependency(name = "org.jboss.forge.addon:scaffold-spi"),
@@ -53,9 +53,10 @@ public class InspectionResultProcessorTest
             @AddonDependency(name = "org.jboss.forge.addon:templates"),
             @AddonDependency(name = "org.jboss.forge.addon:text"),
             @AddonDependency(name = "org.jboss.forge.addon:convert"),
-            @AddonDependency(name = "org.jboss.forge.addon:parser-java")
+            @AddonDependency(name = "org.jboss.forge.addon:parser-java"),
+            @AddonDependency(name = "org.jboss.forge.furnace.container:cdi")
    })
-   public static ForgeArchive getDeployment()
+   public static AddonArchive getDeployment()
    {
       return Deployments.getDeployment();
    }

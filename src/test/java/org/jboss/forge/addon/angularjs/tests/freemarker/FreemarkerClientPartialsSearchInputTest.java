@@ -6,6 +6,28 @@
  */
 package org.jboss.forge.addon.angularjs.tests.freemarker;
 
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.jboss.forge.addon.angularjs.TestHelpers.BASIC_STRING_PROP;
+import static org.jboss.forge.addon.angularjs.TestHelpers.BOOLEAN_PROP;
+import static org.jboss.forge.addon.angularjs.TestHelpers.DATE_PROP;
+import static org.jboss.forge.addon.angularjs.TestHelpers.ENTITY_ID_PROP;
+import static org.jboss.forge.addon.angularjs.TestHelpers.ENTITY_NAME;
+import static org.jboss.forge.addon.angularjs.TestHelpers.ENTITY_VERSION_PROP;
+import static org.jboss.forge.addon.angularjs.TestHelpers.MANY_TO_MANY_PROP;
+import static org.jboss.forge.addon.angularjs.TestHelpers.MANY_TO_ONE_PROP;
+import static org.jboss.forge.addon.angularjs.TestHelpers.NUMBER_PROP;
+import static org.jboss.forge.addon.angularjs.TestHelpers.ONE_TO_MANY_PROP;
+import static org.jboss.forge.addon.angularjs.TestHelpers.ONE_TO_ONE_PROP;
+import static org.jboss.forge.addon.angularjs.TestHelpers.createInspectionResultWrapper;
+import static org.junit.Assert.assertThat;
+
+import java.net.URL;
+import java.util.Map;
+
+import javax.inject.Inject;
+
 import org.hamcrest.core.IsEqual;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -15,25 +37,14 @@ import org.jboss.forge.addon.resource.ResourceFactory;
 import org.jboss.forge.addon.templates.Template;
 import org.jboss.forge.addon.templates.TemplateFactory;
 import org.jboss.forge.addon.templates.freemarker.FreemarkerTemplate;
+import org.jboss.forge.arquillian.AddonDependencies;
 import org.jboss.forge.arquillian.AddonDependency;
-import org.jboss.forge.arquillian.Dependencies;
-import org.jboss.forge.arquillian.archive.ForgeArchive;
+import org.jboss.forge.arquillian.archive.AddonArchive;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import javax.inject.Inject;
-
-import java.net.URL;
-import java.util.Map;
-
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.jboss.forge.addon.angularjs.TestHelpers.*;
-import static org.junit.Assert.assertThat;
 
 /**
  * Tests to verify that the generated HTML of the search page is generated correctly.
@@ -48,15 +59,16 @@ public class FreemarkerClientPartialsSearchInputTest {
     private TemplateFactory processorFactory;
 
     @Deployment
-    @Dependencies({
+    @AddonDependencies({
             @AddonDependency(name = "org.jboss.forge.addon:scaffold-spi"),
             @AddonDependency(name = "org.jboss.forge.addon:javaee"),
             @AddonDependency(name = "org.jboss.forge.addon:templates"),
             @AddonDependency(name = "org.jboss.forge.addon:text"),
             @AddonDependency(name = "org.jboss.forge.addon:convert"),
-            @AddonDependency(name = "org.jboss.forge.addon:parser-java")
+            @AddonDependency(name = "org.jboss.forge.addon:parser-java"),
+            @AddonDependency(name = "org.jboss.forge.furnace.container:cdi")
     })
-    public static ForgeArchive getDeployment()
+    public static AddonArchive getDeployment()
     {
         return Deployments.getDeployment();
     }

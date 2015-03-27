@@ -153,7 +153,7 @@ public class ProjectHelper
 
    public JavaResource createJPAEntity(Project project, String entityName) throws IOException
    {
-      String packageName = project.getFacet(MetadataFacet.class).getTopLevelPackage() + ".model";
+      String packageName = project.getFacet(JavaSourceFacet.class).getBasePackage() + ".model";
       return persistenceOperations.newEntity(project, entityName, packageName, GenerationType.AUTO);
    }
 
