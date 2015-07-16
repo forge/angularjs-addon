@@ -14,7 +14,7 @@
 </#list>
 </#assign>
 
-angular.module('${angularApp}').controller('${angularController}', function($scope, $http, ${angularResource} ${relatedResources}) {
+angular.module('${angularApp}').controller('${angularController}', function($scope, $http, $filter, ${angularResource} ${relatedResources}) {
 
     $scope.search={};
     $scope.currentPage = 0;
@@ -57,7 +57,8 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
 
     $scope.performSearch = function() {
         $scope.searchResults = ${angularResource}.queryAll(function(){
-            $scope.numberOfPages();
+            $scope.filteredResults = $filter('searchFilter')($scope.searchResults, $scope);
+            $scope.currentPage = 0;
         });
     };
     

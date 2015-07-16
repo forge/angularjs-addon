@@ -13,7 +13,7 @@
                 </tr>
             </thead>
             <tbody id="search-results-body">
-                <tr ng-repeat="result in searchResults | searchFilter:searchResults | startFrom:currentPage*pageSize | limitTo:pageSize">
+                <tr ng-repeat="result in filteredResults | startFrom:currentPage*pageSize | limitTo:pageSize">
                 <#list properties as property>
                 <#if (property.hidden!"false") != "true">
                     <#if (property["many-to-one"]!"false") == "true" || (property["one-to-one"]!"false") == "true">
