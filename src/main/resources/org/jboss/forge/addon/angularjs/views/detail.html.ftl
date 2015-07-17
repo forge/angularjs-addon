@@ -5,9 +5,6 @@
     <h3 ng-switch-when="false">View or edit ${entityName}</h3>
 </header>
 <form id="${formName}" name="${formName}" class="form-horizontal" role="form">
-    <div ng-show="displayError" class="alert alert-danger">
-        <strong>Error!</strong> Something broke. Retry, or cancel and start afresh.
-    </div>
     ${formProperties}
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">

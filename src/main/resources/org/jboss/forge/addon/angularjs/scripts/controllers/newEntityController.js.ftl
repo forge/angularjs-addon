@@ -3,6 +3,7 @@
     angularController = "New${entityName}Controller"
     angularResource = "${entityName}Resource"
     model = "$scope.${entityName?uncap_first}"
+    entityText = "${entityName?uncap_first}"
     entityRoute = "/${pluralizedEntityName}"
 >
 <#--An assignment expression that 'captures' all the related resources -->
@@ -14,7 +15,7 @@
 </#list>
 </#assign>
 
-angular.module('${angularApp}').controller('${angularController}', function ($scope, $location, locationParser, ${angularResource} ${relatedResources}) {
+angular.module('${angularApp}').controller('${angularController}', function ($scope, $location, locationParser, flash, ${angularResource} ${relatedResources}) {
     $scope.disabled = false;
     $scope.$location = $location;
     ${model} = ${model} || {};
@@ -93,11 +94,15 @@ angular.module('${angularApp}').controller('${angularController}', function ($sc
     $scope.save = function() {
         var successCallback = function(data,responseHeaders){
             var id = locationParser(responseHeaders);
-            $location.path('${entityRoute}/edit/' + id);
-            $scope.displayError = false;
+            flash.setMessage({'type':'success','text':'The ${entityText} was created successfully.'});
+            $location.path('${entityRoute}');
         };
-        var errorCallback = function() {
-            $scope.displayError = true;
+        var errorCallback = function(response) {
+            if(response && response.data && response.data.message) {
+                flash.setMessage({'type': 'error', 'text': response.data.message}, true);
+            } else {
+                flash.setMessage({'type': 'error', 'text': 'Something broke. Retry, or cancel and start afresh.'}, true);
+            }
         };
         ${angularResource}.save(${model}, successCallback, errorCallback);
     };

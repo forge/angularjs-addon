@@ -104,12 +104,16 @@ public class ResourceProvider {
                 + "/scripts/directives/timepicker.js", strategy));
         resources.add(new ScaffoldResource("/scripts/directives/datetimepicker.js.ftl", targetDir
                 + "/scripts/directives/datetimepicker.js", strategy));
+        resources.add(new ScaffoldResource("/scripts/services/flash.js.ftl", targetDir
+                + "/scripts/services/flash.js", strategy));
         resources.add(new ScaffoldResource("/scripts/services/locationParser.js.ftl", targetDir
                 + "/scripts/services/locationParser.js", strategy));
         resources.add(new ScaffoldResource("/scripts/filters/genericSearchFilter.js.ftl", targetDir
                 + "/scripts/filters/genericSearchFilter.js", strategy));
         resources.add(new ScaffoldResource("/scripts/filters/startFromFilter.js.ftl", targetDir
                 + "/scripts/filters/startFromFilter.js", strategy));
+        resources.add(new ScaffoldResource("/scripts/controllers/flashController.js.ftl", targetDir
+                + "/scripts/controllers/flashController.js", strategy));
         return resources;
     }
 

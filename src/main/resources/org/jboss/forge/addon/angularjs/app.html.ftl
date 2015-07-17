@@ -42,6 +42,10 @@
                 </div>
                 <!-- main area-->
                 <div class="col-sm-offset-1 col-xs-12 col-sm-8 well mainarea">
+                    <div ng-controller="FlashController" class="alert alert-dismissible" ng-class="'alert-' + flash.getMessage().cssClass" role="alert" ng-show="showAlert">
+                        <button type="button" class="close" ng-click="hideAlert()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        {{flash.getMessage().text}}
+                    </div>
                     <div id="main" ng-view>
                     </div>
                 </div>
@@ -69,9 +73,11 @@
     <script src="scripts/directives/datetimepicker.js"></script>
     <script src="scripts/filters/startFromFilter.js"></script>
     <script src="scripts/filters/genericSearchFilter.js"></script>
+    <script src="scripts/services/flash.js"></script>
     <script src="scripts/services/locationParser.js"></script>
     <#list entityNames as entityName>
     <script src="scripts/services/${entityName}Factory.js"></script>
+    <script src="scripts/controllers/flashController.js"></script>
     <script src="scripts/controllers/new${entityName}Controller.js"></script>
     <script src="scripts/controllers/search${entityName}Controller.js"></script>
     <script src="scripts/controllers/edit${entityName}Controller.js"></script>

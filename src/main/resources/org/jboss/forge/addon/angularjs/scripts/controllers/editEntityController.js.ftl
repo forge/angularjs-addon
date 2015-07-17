@@ -4,6 +4,7 @@
     angularResource = "${entityName}Resource"
     entityIdJsVar = "${entityName}Id"
     model = "$scope.${entityName?uncap_first}"
+    entityText = "${entityName?uncap_first}"
     entityRoute = "/${pluralizedEntityName}"
 >
 
@@ -15,7 +16,7 @@
 </#list>
 </#assign>
 
-angular.module('${angularApp}').controller('${angularController}', function($scope, $routeParams, $location, ${angularResource} ${relatedResources}) {
+angular.module('${angularApp}').controller('${angularController}', function($scope, $routeParams, $location, flash, ${angularResource} ${relatedResources}) {
     var self = this;
     $scope.disabled = false;
     $scope.$location = $location;
@@ -75,6 +76,7 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
             </#list>
         };
         var errorCallback = function() {
+            flash.setMessage({'type': 'error', 'text': 'The ${entityText} could not be found.'});
             $location.path("${entityRoute}");
         };
         ${angularResource}.get({${entityIdJsVar}:$routeParams.${entityIdJsVar}}, successCallback, errorCallback);
@@ -86,11 +88,15 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
 
     $scope.save = function() {
         var successCallback = function(){
+            flash.setMessage({'type':'success','text':'The ${entityText} was updated successfully.'}, true);
             $scope.get();
-            $scope.displayError = false;
         };
-        var errorCallback = function() {
-            $scope.displayError=true;
+        var errorCallback = function(response) {
+            if(response && response.data && response.data.message) {
+                flash.setMessage({'type': 'error', 'text': response.data.message}, true);
+            } else {
+                flash.setMessage({'type': 'error', 'text': 'Something broke. Retry, or cancel and start afresh.'}, true);
+            }
         };
         ${model}.$update(successCallback, errorCallback);
     };
@@ -101,11 +107,15 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
 
     $scope.remove = function() {
         var successCallback = function() {
+            flash.setMessage({'type': 'error', 'text': 'The ${entityText} was deleted.'});
             $location.path("${entityRoute}");
-            $scope.displayError = false;
         };
-        var errorCallback = function() {
-            $scope.displayError=true;
+        var errorCallback = function(response) {
+            if(response && response.data && response.data.message) {
+                flash.setMessage({'type': 'error', 'text': response.data.message}, true);
+            } else {
+                flash.setMessage({'type': 'error', 'text': 'Something broke. Retry, or cancel and start afresh.'}, true);
+            }
         }; 
         ${model}.$remove(successCallback, errorCallback);
     };
