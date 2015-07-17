@@ -203,7 +203,7 @@ public class FreemarkerClientPartialsSearchResultsTest
       assertThat(headers.text(), equalTo("Full Name"));
 
       Elements resultRows = html.select("table > tbody > tr");
-      assertThat(resultRows.attr("ng-repeat"), containsString("result in searchResults"));
+      assertThat(resultRows.attr("ng-repeat"), containsString("result in filteredResults"));
 
       Elements resultCells = resultRows.select(" > td");
       assertThat(resultCells.size(), equalTo(1));
@@ -240,7 +240,7 @@ public class FreemarkerClientPartialsSearchResultsTest
       assertThat(headers.text(), equalTo("Age"));
 
       Elements resultRows = html.select("table > tbody > tr");
-      assertThat(resultRows.attr("ng-repeat"), containsString("result in searchResults"));
+      assertThat(resultRows.attr("ng-repeat"), containsString("result in filteredResults"));
 
       Elements resultCells = resultRows.select(" > td");
       assertThat(resultCells.size(), equalTo(1));
@@ -278,7 +278,7 @@ public class FreemarkerClientPartialsSearchResultsTest
       assertThat(headers.text(), equalTo("Date Of Birth"));
 
       Elements resultRows = html.select("table > tbody > tr");
-      assertThat(resultRows.attr("ng-repeat"), containsString("result in searchResults"));
+      assertThat(resultRows.attr("ng-repeat"), containsString("result in filteredResults"));
 
       Elements resultCells = resultRows.select(" > td");
       assertThat(resultCells.size(), equalTo(1));
@@ -319,7 +319,7 @@ public class FreemarkerClientPartialsSearchResultsTest
       assertThat(headers.text(), equalTo("Voucher"));
 
       Elements resultRows = html.select("table > tbody > tr");
-      assertThat(resultRows.attr("ng-repeat"), containsString("result in searchResults"));
+      assertThat(resultRows.attr("ng-repeat"), containsString("result in filteredResults"));
 
       Elements resultCells = resultRows.select(" > td");
       assertThat(resultCells.size(), equalTo(1));
@@ -359,7 +359,7 @@ public class FreemarkerClientPartialsSearchResultsTest
       assertThat(headers.text(), equalTo("Customer"));
 
       Elements resultRows = html.select("table > tbody > tr");
-      assertThat(resultRows.attr("ng-repeat"), containsString("result in searchResults"));
+      assertThat(resultRows.attr("ng-repeat"), containsString("result in filteredResults"));
 
       Elements resultCells = resultRows.select(" > td");
       assertThat(resultCells.size(), equalTo(1));
