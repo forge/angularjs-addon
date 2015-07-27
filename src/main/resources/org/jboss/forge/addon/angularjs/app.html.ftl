@@ -75,9 +75,9 @@
     <script src="scripts/filters/genericSearchFilter.js"></script>
     <script src="scripts/services/flash.js"></script>
     <script src="scripts/services/locationParser.js"></script>
+    <script src="scripts/controllers/flashController.js"></script>
     <#list entityNames as entityName>
     <script src="scripts/services/${entityName}Factory.js"></script>
-    <script src="scripts/controllers/flashController.js"></script>
     <script src="scripts/controllers/new${entityName}Controller.js"></script>
     <script src="scripts/controllers/search${entityName}Controller.js"></script>
     <script src="scripts/controllers/edit${entityName}Controller.js"></script>
