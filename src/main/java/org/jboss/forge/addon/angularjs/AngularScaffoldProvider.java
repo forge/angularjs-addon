@@ -17,6 +17,7 @@ import static org.jboss.forge.addon.angularjs.ResourceProvider.GLYPHICONS_EOT;
 import static org.jboss.forge.addon.angularjs.ResourceProvider.GLYPHICONS_SVG;
 import static org.jboss.forge.addon.angularjs.ResourceProvider.GLYPHICONS_TTF;
 import static org.jboss.forge.addon.angularjs.ResourceProvider.GLYPHICONS_WOFF;
+import static org.jboss.forge.addon.angularjs.ResourceProvider.GLYPHICONS_WOFF2;
 import static org.jboss.forge.addon.angularjs.ResourceProvider.JQUERY_JS;
 import static org.jboss.forge.addon.angularjs.ResourceProvider.LANDING_VIEW;
 import static org.jboss.forge.addon.angularjs.ResourceProvider.MAIN_CSS;
@@ -42,7 +43,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import javax.inject.Inject;
-import javax.persistence.Id;
 
 import org.jboss.forge.addon.facets.FacetFactory;
 import org.jboss.forge.addon.javaee.cdi.CDIFacet;
@@ -80,7 +80,6 @@ import org.jboss.forge.addon.ui.result.NavigationResult;
 import org.jboss.forge.addon.ui.result.navigation.NavigationResultBuilder;
 import org.jboss.forge.addon.ui.util.Metadata;
 import org.jboss.forge.roaster.model.JavaClass;
-import org.jboss.forge.roaster.model.Member;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
 import org.jboss.shrinkwrap.descriptor.api.webapp30.WebAppDescriptor;
@@ -157,6 +156,7 @@ public class AngularScaffoldProvider implements ScaffoldProvider
                   && web.getWebResource(targetDir + GLYPHICONS_SVG).exists()
                   && web.getWebResource(targetDir + GLYPHICONS_TTF).exists()
                   && web.getWebResource(targetDir + GLYPHICONS_WOFF).exists()
+                  && web.getWebResource(targetDir + GLYPHICONS_WOFF2).exists()
                   && web.getWebResource(targetDir + FORGE_LOGO_PNG).exists()
                   && web.getWebResource(targetDir + ANGULAR_RESOURCE_JS).exists()
                   && web.getWebResource(targetDir + ANGULAR_ROUTE_JS).exists()

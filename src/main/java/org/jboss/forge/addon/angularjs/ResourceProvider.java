@@ -29,6 +29,8 @@ public class ResourceProvider {
     static final String GLYPHICONS_TTF = "/fonts/glyphicons-halflings-regular.ttf";
     
     static final String GLYPHICONS_WOFF = "/fonts/glyphicons-halflings-regular.woff";
+
+    static final String GLYPHICONS_WOFF2 = "/fonts/glyphicons-halflings-regular.woff2";
     
     static final String FORGE_LOGO_PNG = "/img/forge-logo.png";
 
@@ -78,6 +80,7 @@ public class ResourceProvider {
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + GLYPHICONS_SVG, targetDir + GLYPHICONS_SVG, strategy));
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + GLYPHICONS_TTF, targetDir + GLYPHICONS_TTF, strategy));
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + GLYPHICONS_WOFF, targetDir + GLYPHICONS_WOFF, strategy));
+        statics.add(new ScaffoldResource(SCAFFOLD_DIR + GLYPHICONS_WOFF2, targetDir + GLYPHICONS_WOFF2, strategy));
         statics.add(new ScaffoldResource(SCAFFOLD_DIR + LANDING_VIEW, targetDir + LANDING_VIEW, strategy));
         return statics;
     }
