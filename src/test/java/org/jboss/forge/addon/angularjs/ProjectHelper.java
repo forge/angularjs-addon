@@ -39,7 +39,6 @@ import org.jboss.forge.addon.parser.java.projects.JavaWebProjectType;
 import org.jboss.forge.addon.parser.java.resources.JavaResource;
 import org.jboss.forge.addon.projects.Project;
 import org.jboss.forge.addon.projects.ProjectFactory;
-import org.jboss.forge.addon.projects.facets.MetadataFacet;
 import org.jboss.forge.roaster.model.Annotation;
 import org.jboss.forge.roaster.model.Field;
 import org.jboss.forge.roaster.model.source.AnnotationSource;

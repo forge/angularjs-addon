@@ -25,7 +25,7 @@ public class CopyResourcesStrategy implements ProcessingStrategy
    }
 
    @Override
-   public Resource execute(ScaffoldResource scaffoldResource)
+   public Resource<?> execute(ScaffoldResource scaffoldResource)
    {
       return ScaffoldUtil.createOrOverwrite(web.getWebResource(scaffoldResource.getDestination()), getClass()
                .getResourceAsStream(scaffoldResource.getSource()));

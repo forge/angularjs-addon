@@ -27,24 +27,15 @@ import static org.jboss.forge.addon.angularjs.ResourceProvider.getEntityTemplate
 import static org.jboss.forge.addon.angularjs.ResourceProvider.getGlobalTemplates;
 import static org.jboss.forge.addon.angularjs.ResourceProvider.getStatics;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.JarURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 import javax.inject.Inject;
 
-import org.jboss.forge.addon.facets.FacetFactory;
 import org.jboss.forge.addon.javaee.cdi.CDIFacet;
 import org.jboss.forge.addon.javaee.cdi.ui.CDISetupCommand;
 import org.jboss.forge.addon.javaee.ejb.EJBFacet;
@@ -73,13 +64,11 @@ import org.jboss.forge.addon.scaffold.spi.ScaffoldGenerationContext;
 import org.jboss.forge.addon.scaffold.spi.ScaffoldProvider;
 import org.jboss.forge.addon.scaffold.spi.ScaffoldSetupContext;
 import org.jboss.forge.addon.templates.TemplateFactory;
-import org.jboss.forge.addon.templates.facets.TemplateFacet;
 import org.jboss.forge.addon.text.Inflector;
 import org.jboss.forge.addon.ui.command.UICommand;
 import org.jboss.forge.addon.ui.result.NavigationResult;
 import org.jboss.forge.addon.ui.result.navigation.NavigationResultBuilder;
 import org.jboss.forge.addon.ui.util.Metadata;
-import org.jboss.forge.roaster.model.JavaClass;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
 import org.jboss.shrinkwrap.descriptor.api.webapp30.WebAppDescriptor;
@@ -97,9 +86,6 @@ public class AngularScaffoldProvider implements ScaffoldProvider
    public static final String SCAFFOLD_DIR = "/" + BASE_PACKAGE.replace('.', '/');
 
    Project project;
-
-   @Inject
-   private FacetFactory facetFactory;
 
    @Inject
    private ResourceFactory resourceFactory;
@@ -133,7 +119,8 @@ public class AngularScaffoldProvider implements ScaffoldProvider
       ArrayList<Resource<?>> result = new ArrayList<>();
       WebResourcesFacet web = project.getFacet(WebResourcesFacet.class);
       ProcessingStrategy strategy = new CopyResourcesStrategy(web);
-      for (ScaffoldResource scaffoldResource : getStatics(targetDir, strategy)) {
+      for (ScaffoldResource scaffoldResource : getStatics(targetDir, strategy))
+      {
          result.add(scaffoldResource.generate());
       }
 
@@ -245,13 +232,17 @@ public class AngularScaffoldProvider implements ScaffoldProvider
          // Process the Freemarker templates with the Freemarker data model and retrieve the generated resources from
          // the registry.
          WebResourcesFacet web = project.getFacet(WebResourcesFacet.class);
-         ProcessingStrategy strategy = new ProcessTemplateStrategy(web, resourceFactory, project, templateFactory, dataModel);
+         ProcessingStrategy strategy = new ProcessTemplateStrategy(web, resourceFactory, project, templateFactory,
+                  dataModel);
          List<ScaffoldResource> scaffoldResources = getEntityTemplates(targetDir, entityName, strategy);
          scaffoldResources.add(new ScaffoldResource("/views/detail.html.ftl", targetDir + "/views/" + entityName
-                  + "/detail.html", new DetailTemplateStrategy(web, resourceFactory, project, templateFactory, dataModel)));
+                  + "/detail.html",
+                  new DetailTemplateStrategy(web, resourceFactory, project, templateFactory, dataModel)));
          scaffoldResources.add(new ScaffoldResource("/views/search.html.ftl", targetDir + "/views/" + entityName
-                  + "/search.html", new SearchTemplateStrategy(web, resourceFactory, project, templateFactory, dataModel)));
-         for (ScaffoldResource scaffoldResource : scaffoldResources) {
+                  + "/search.html",
+                  new SearchTemplateStrategy(web, resourceFactory, project, templateFactory, dataModel)));
+         for (ScaffoldResource scaffoldResource : scaffoldResources)
+         {
             result.add(scaffoldResource.generate());
          }
       }
@@ -289,7 +280,7 @@ public class AngularScaffoldProvider implements ScaffoldProvider
          setupCommands.add(RestSetupWizard.class);
       }
 
-      if(setupCommands.size() >0)
+      if (setupCommands.size() > 0)
       {
          Metadata compositeSetupMetadata = Metadata.forCommand(setupCommands.get(0))
                   .name("Setup Facets")
@@ -370,9 +361,11 @@ public class AngularScaffoldProvider implements ScaffoldProvider
       dataModel.put("projectTitle", StringUtils.uncamelCase(metadata.getProjectName()));
       dataModel.put("targetDir", targetDir);
 
-      ProcessingStrategy strategy = new ProcessTemplateStrategy(web, resourceFactory, project, templateFactory, dataModel);
-      for (ScaffoldResource scaffoldResource : getGlobalTemplates(targetDir, strategy)) {
-          result.add(scaffoldResource.generate());
+      ProcessingStrategy strategy = new ProcessTemplateStrategy(web, resourceFactory, project, templateFactory,
+               dataModel);
+      for (ScaffoldResource scaffoldResource : getGlobalTemplates(targetDir, strategy))
+      {
+         result.add(scaffoldResource.generate());
       }
 
       configureWelcomeFile();
@@ -383,6 +376,7 @@ public class AngularScaffoldProvider implements ScaffoldProvider
     * Configures the welcome file entry in the project's web application descriptor to the static ever-present
     * <code>index.html</code> file. This method adds the entry only if it is absent.
     */
+   @SuppressWarnings({ "rawtypes", "unchecked" })
    private void configureWelcomeFile()
    {
       String indexFileEntry = "/index.html";
@@ -404,55 +398,7 @@ public class AngularScaffoldProvider implements ScaffoldProvider
       return;
    }
 
-   /**
-    * Installs the templates into src/main/templates. All Freemarker templates would be copied into the
-    * src/main/templates/angularjs directory, obeying the same structure as the one in this provider.
-    */
-   private void installTemplates()
-   {
-      // Install the required facet so that the templates directory is created if not present.
-      if (!project.hasFacet(TemplateFacet.class))
-      {
-         facetFactory.install(project, TemplateFacet.class);
-      }
-
-      TemplateFacet templates = project.getFacet(TemplateFacet.class);
-      // Obtain a reference to the scaffold directory in the classpath
-      URL resource = getClass().getClassLoader().getResource("scaffold");
-      if (resource != null && resource.getProtocol().equals("jar"))
-      {
-         try
-         {
-            // Obtain a reference to the JAR containing the scaffold directory
-            JarURLConnection connection = (JarURLConnection) resource.openConnection();
-            JarFile jarFile = connection.getJarFile();
-            Enumeration<JarEntry> entries = jarFile.entries();
-            // Iterate through the JAR entries and copy files to the template directory. Only files ending with .ftl,
-            // and
-            // present in the scaffold/ directory are copied.
-            while (entries.hasMoreElements())
-            {
-               JarEntry jarEntry = entries.nextElement();
-               String entryName = jarEntry.getName();
-               if (entryName.startsWith("scaffold/") && entryName.endsWith(".ftl"))
-               {
-                  String relativeFilename = entryName.substring("scaffold/".length());
-                  InputStream is = jarFile.getInputStream(jarEntry);
-                  // Copy the file into a sub-directory under src/main/templates named after the scaffold provider.
-                  Resource<File> templateResource = resourceFactory.create(new File(relativeFilename));
-                  FileResource<?> fileResource = templateResource.reify(FileResource.class);
-                  fileResource.setContents(is);
-               }
-            }
-         }
-         catch (IOException ioEx)
-         {
-            throw new RuntimeException(ioEx);
-         }
-      }
-   }
-
-   private String parseResourcePath(JavaClass klass)
+   private String parseResourcePath(JavaClassSource klass)
    {
       JavaSourceFacet java = project.getFacet(JavaSourceFacet.class);
       ResourcePathVisitor visitor = new ResourcePathVisitor(klass.getName());

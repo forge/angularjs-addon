@@ -13,5 +13,5 @@ import org.jboss.forge.addon.resource.Resource;
  */
 public interface ProcessingStrategy
 {
-   public Resource execute(ScaffoldResource scaffoldResource);
+   public Resource<?> execute(ScaffoldResource scaffoldResource);
 }

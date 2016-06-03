@@ -50,8 +50,9 @@ public class SearchTemplateStrategy implements ProcessingStrategy
       this.dataModel = dataModel;
    }
 
+   @SuppressWarnings("unchecked")
    @Override
-   public Resource execute(ScaffoldResource scaffoldResource)
+   public Resource<?> execute(ScaffoldResource scaffoldResource)
    {
       List<Map<String, String>> properties = (List<Map<String, String>>) dataModel.get("properties");
       StringBuilder searchFormProperties = new StringBuilder();
