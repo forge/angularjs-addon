@@ -14,8 +14,8 @@
       <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
 
       <version.forge.descriptors>0.0.4.Final</version.forge.descriptors>
-      <version.furnace>2.15.3.Final</version.furnace>
-      <version.forge>2.15.2.Final</version.forge>
+      <version.furnace>2.23.5.Final</version.furnace>
+      <version.forge>3.2.1.Final</version.forge>
       <version.metawidget>2.4</version.metawidget>
 
       <!-- Build Info -->
