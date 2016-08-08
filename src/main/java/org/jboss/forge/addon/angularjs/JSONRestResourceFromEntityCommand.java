@@ -15,7 +15,6 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
-import org.jboss.forge.addon.convert.Converter;
 import org.jboss.forge.addon.javaee.jpa.JPAFacet;
 import org.jboss.forge.addon.javaee.rest.generation.RestGenerationConstants;
 import org.jboss.forge.addon.javaee.rest.generation.RestGenerationContext;
@@ -49,8 +48,8 @@ import org.jboss.shrinkwrap.descriptor.api.persistence.PersistenceCommonDescript
 import org.jboss.shrinkwrap.descriptor.api.persistence.PersistenceUnitCommon;
 
 /**
- * A wizard step to perform creation of REST resources.
- * It re-uses services from the Java EE addon to create JAX-RS based REST resources.
+ * A wizard step to perform creation of REST resources. It re-uses services from the Java EE addon to create JAX-RS
+ * based REST resources.
  */
 public class JSONRestResourceFromEntityCommand implements UIWizardStep
 {
@@ -124,25 +123,11 @@ public class JSONRestResourceFromEntityCommand implements UIWizardStep
       generator.setDefaultValue(defaultResourceGenerator);
       if (context.getProvider().isGUI())
       {
-         generator.setItemLabelConverter(new Converter<RestResourceGenerator, String>()
-         {
-            @Override
-            public String convert(RestResourceGenerator source)
-            {
-               return source == null ? null : source.getDescription();
-            }
-         });
+         generator.setItemLabelConverter(RestResourceGenerator::getDescription);
       }
       else
       {
-         generator.setItemLabelConverter(new Converter<RestResourceGenerator, String>()
-         {
-            @Override
-            public String convert(RestResourceGenerator source)
-            {
-               return source == null ? null : source.getName();
-            }
-         });
+         generator.setItemLabelConverter(RestResourceGenerator::getName);
       }
       builder.add(generator)
                .add(packageName)

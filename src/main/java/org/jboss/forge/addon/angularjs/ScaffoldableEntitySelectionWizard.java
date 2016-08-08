@@ -15,7 +15,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 import org.jboss.forge.addon.angularjs.util.RestResourceTypeVisitor;
-import org.jboss.forge.addon.convert.Converter;
 import org.jboss.forge.addon.javaee.jpa.JPAFacet;
 import org.jboss.forge.addon.parser.java.facets.JavaSourceFacet;
 import org.jboss.forge.addon.projects.Project;
@@ -52,7 +51,7 @@ public class ScaffoldableEntitySelectionWizard implements UIWizardStep
    private UISelectMany<JavaClassSource> targets;
 
    @Inject
-   @WithAttributes(label = "Generate REST resources", required = false, description = "If enabled, REST resources for the selected JPA entities will be generated")
+   @WithAttributes(label = "Generate REST resources", required = false, description = "If enabled, REST resources for the selected JPA entities will be generated", defaultValue = "true")
    private UIInput<Boolean> generateRestResources;
 
    @Inject
@@ -112,7 +111,7 @@ public class ScaffoldableEntitySelectionWizard implements UIWizardStep
       JPAFacet<?> persistenceFacet = project.getFacet(JPAFacet.class);
       List<JavaClassSource> allEntities = persistenceFacet.getAllEntities();
       List<JavaClassSource> supportedEntities = new ArrayList<>();
-      for (JavaClassSource entity: allEntities)
+      for (JavaClassSource entity : allEntities)
       {
          for (Member<?> member : entity.getMembers())
          {
@@ -125,14 +124,7 @@ public class ScaffoldableEntitySelectionWizard implements UIWizardStep
          }
       }
       targets.setValueChoices(supportedEntities);
-      targets.setItemLabelConverter(new Converter<JavaClassSource, String>()
-      {
-         @Override
-         public String convert(JavaClassSource source)
-         {
-            return source == null ? null : source.getQualifiedName();
-         }
-      });
+      targets.setItemLabelConverter(JavaClassSource::getQualifiedName);
       builder.add(targets).add(generateRestResources);
    }
 
