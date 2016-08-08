@@ -98,8 +98,8 @@ angular.module('${angularApp}').controller('${angularController}', function ($sc
             $location.path('${entityRoute}');
         };
         var errorCallback = function(response) {
-            if(response && response.data && response.data.message) {
-                flash.setMessage({'type': 'error', 'text': response.data.message}, true);
+            if(response && response.data) {
+                flash.setMessage({'type': 'error', 'text': response.data}, true);
             } else {
                 flash.setMessage({'type': 'error', 'text': 'Something broke. Retry, or cancel and start afresh.'}, true);
             }
