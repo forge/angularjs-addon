@@ -8,7 +8,11 @@ package org.jboss.forge.addon.angularjs;
 
 import static org.jboss.forge.addon.angularjs.AngularJSInspectionResultConstants.JS_IDENTIFIER;
 import static org.jboss.forge.addon.scaffold.metawidget.inspector.ForgeInspectionResultConstants.PRIMARY_KEY;
-import static org.metawidget.inspector.InspectionResultConstants.*;
+import static org.metawidget.inspector.InspectionResultConstants.DATETIME_TYPE;
+import static org.metawidget.inspector.InspectionResultConstants.LABEL;
+import static org.metawidget.inspector.InspectionResultConstants.LOOKUP;
+import static org.metawidget.inspector.InspectionResultConstants.NAME;
+import static org.metawidget.inspector.InspectionResultConstants.TYPE;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -17,7 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
@@ -50,7 +53,6 @@ public class InspectionResultProcessor
    private MetawidgetInspectorFacade metawidgetInspectorFacade;
    private Project project;
 
-   @Inject
    public InspectionResultProcessor(Project project, MetawidgetInspectorFacade metawidgetInspectorFacade)
    {
       this.project = project;
@@ -60,12 +62,12 @@ public class InspectionResultProcessor
    public List<Map<String, String>> enhanceResults(JavaClassSource entity, List<Map<String, String>> inspectionResults)
    {
       Iterator<Map<String, String>> iterInspectionResults = inspectionResults.iterator();
-      List<Map<String, String>> additionalPropertyAttributes = new ArrayList<Map<String, String>>();
-      while(iterInspectionResults.hasNext())
+      List<Map<String, String>> additionalPropertyAttributes = new ArrayList<>();
+      while (iterInspectionResults.hasNext())
       {
          Map<String, String> propertyAttributes = iterInspectionResults.next();
          // FORGEPLUGINS-120 Omit references to classes having composite keys
-         if(shouldOmitPropertyWithCompositeKey(propertyAttributes))
+         if (shouldOmitPropertyWithCompositeKey(propertyAttributes))
          {
             iterInspectionResults.remove();
             continue;
@@ -122,7 +124,7 @@ public class InspectionResultProcessor
          String embeddedType = propertyAttributes.get(TYPE);
          JavaClassSource javaClass = getJavaClass(embeddedType);
          List<Map<String, String>> embeddedTypeInspectionResults = metawidgetInspectorFacade.inspect(javaClass);
-         List<Map<String, String>> expandedInspectionResults = new ArrayList<Map<String, String>>();
+         List<Map<String, String>> expandedInspectionResults = new ArrayList<>();
          for (Map<String, String> embeddedPropertyAttribute : embeddedTypeInspectionResults)
          {
             embeddedPropertyAttribute.put(LABEL, StringUtils.uncamelCase(embeddedPropertyAttribute.get(NAME)));
@@ -214,7 +216,8 @@ public class InspectionResultProcessor
          propertyAttributes.put("simpleType", rightHandSideSimpleName);
          JavaClassSource javaClass = getJavaClass(rightHandSideType);
          List<Map<String, String>> rhsInspectionResults = metawidgetInspectorFacade.inspect(javaClass);
-         List<InspectedProperty> fieldsToDisplay = getPropertiesToDisplay(getDisplayableProperties(rhsInspectionResults));
+         List<InspectedProperty> fieldsToDisplay = getPropertiesToDisplay(
+                  getDisplayableProperties(rhsInspectionResults));
          InspectedProperty defaultField = fieldsToDisplay.size() > 0 ? fieldsToDisplay.get(0) : null;
          InspectedProperty fieldToDisplay = defaultField;
          /*
@@ -229,7 +232,7 @@ public class InspectionResultProcessor
 
    private List<InspectedProperty> getPropertiesToDisplay(List<Map<String, String>> displayableProperties)
    {
-      List<InspectedProperty> fieldsToDisplay = new ArrayList<InspectedProperty>();
+      List<InspectedProperty> fieldsToDisplay = new ArrayList<>();
       for (Map<String, String> displayableProperty : displayableProperties)
       {
          fieldsToDisplay.add(new InspectedProperty(displayableProperty));
@@ -237,7 +240,7 @@ public class InspectionResultProcessor
       return fieldsToDisplay;
    }
 
-   private boolean shouldOmitPropertyWithCompositeKey(Map<String,String> propertyAttributes)
+   private boolean shouldOmitPropertyWithCompositeKey(Map<String, String> propertyAttributes)
    {
       // Extract simple type name of the relationship types
       boolean isManyToOneRel = Boolean.parseBoolean(propertyAttributes.get("many-to-one"));
@@ -302,7 +305,7 @@ public class InspectionResultProcessor
    // TODO; Extract this method into it's own class, for unit testing.
    private List<Map<String, String>> getDisplayableProperties(List<Map<String, String>> inspectionResults)
    {
-      List<Map<String, String>> displayableProperties = new ArrayList<Map<String, String>>();
+      List<Map<String, String>> displayableProperties = new ArrayList<>();
       for (Map<String, String> propertyAttributes : inspectionResults)
       {
          canonicalizeTypes(propertyAttributes);
