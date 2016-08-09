@@ -16,7 +16,6 @@
       <version.forge.descriptors>0.0.4.Final</version.forge.descriptors>
       <version.furnace>2.23.7.Final</version.furnace>
       <version.forge>3.2.3.Final</version.forge>
-      <version.metawidget>2.4</version.metawidget>
 
       <!-- Build Info -->
       <forge.angularjs.scm.connection>scm:git:git://github.com/forge/angularjs-addon.git</forge.angularjs.scm.connection>
