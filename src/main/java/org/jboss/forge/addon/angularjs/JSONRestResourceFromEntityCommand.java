@@ -30,14 +30,11 @@ import org.jboss.forge.addon.text.Inflector;
 import org.jboss.forge.addon.ui.context.UIBuilder;
 import org.jboss.forge.addon.ui.context.UIContext;
 import org.jboss.forge.addon.ui.context.UIExecutionContext;
-import org.jboss.forge.addon.ui.context.UINavigationContext;
-import org.jboss.forge.addon.ui.context.UIValidationContext;
 import org.jboss.forge.addon.ui.hints.InputType;
 import org.jboss.forge.addon.ui.input.UIInput;
 import org.jboss.forge.addon.ui.input.UISelectOne;
 import org.jboss.forge.addon.ui.metadata.UICommandMetadata;
 import org.jboss.forge.addon.ui.metadata.WithAttributes;
-import org.jboss.forge.addon.ui.result.NavigationResult;
 import org.jboss.forge.addon.ui.result.Result;
 import org.jboss.forge.addon.ui.result.Results;
 import org.jboss.forge.addon.ui.util.Metadata;
@@ -121,17 +118,9 @@ public class JSONRestResourceFromEntityCommand implements UIWizardStep
          }
       }
       generator.setDefaultValue(defaultResourceGenerator);
-      if (context.getProvider().isGUI())
-      {
-         generator.setItemLabelConverter(RestResourceGenerator::getDescription);
-      }
-      else
-      {
-         generator.setItemLabelConverter(RestResourceGenerator::getName);
-      }
-      builder.add(generator)
-               .add(packageName)
-               .add(persistenceUnit);
+      generator.setItemLabelConverter(
+               context.getProvider().isGUI() ? RestResourceGenerator::getDescription : RestResourceGenerator::getName);
+      builder.add(generator).add(packageName).add(persistenceUnit);
    }
 
    @Override
@@ -185,18 +174,6 @@ public class JSONRestResourceFromEntityCommand implements UIWizardStep
       generationContext.setTargetPackageName(packageName.getValue());
       generationContext.setInflector(inflector);
       return generationContext;
-   }
-
-   @Override
-   public NavigationResult next(UINavigationContext context) throws Exception
-   {
-      return null;
-   }
-
-   @Override
-   public void validate(UIValidationContext context)
-   {
-      // Do nothing
    }
 
    private Project getSelectedProject(UIContext context)
