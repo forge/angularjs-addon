@@ -6,7 +6,6 @@
  */
 package org.jboss.forge.addon.angularjs;
 
-import static org.jboss.forge.addon.angularjs.AngularJSInspectionResultConstants.JS_IDENTIFIER;
 import static org.jboss.forge.addon.scaffold.metawidget.inspector.ForgeInspectionResultConstants.PRIMARY_KEY;
 import static org.metawidget.inspector.InspectionResultConstants.DATETIME_TYPE;
 import static org.metawidget.inspector.InspectionResultConstants.LABEL;
@@ -49,6 +48,7 @@ import org.metawidget.util.simple.StringUtils;
  */
 public class InspectionResultProcessor
 {
+   private static final String JS_IDENTIFIER = "identifier";
 
    private MetawidgetInspectorFacade metawidgetInspectorFacade;
    private Project project;
